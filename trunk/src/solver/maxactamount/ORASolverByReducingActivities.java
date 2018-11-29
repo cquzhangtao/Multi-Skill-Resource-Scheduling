@@ -47,6 +47,7 @@ public class ORASolverByReducingActivities extends ORASolverWithAllActivities {
 				return false;
 			}
 		}
+		System.out.println("Started Activity num "+problem.getActList().size() );
 		return true;
 		
 	}

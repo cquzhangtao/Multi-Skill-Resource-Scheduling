@@ -251,8 +251,61 @@ public class OverlappingResAllocProblem {
 		}
 	}
 	
-	public void print() {
 	
+	private void printQuaNum() {
+		
+		String str = "";
+		str += "Qualification            ";
+		for (String qua : qualificationResourceRelation.keySet()) {
+			if (qua.equals("DUMMY")) {
+				continue;
+			}
+			str += qua;
+			for (int i = 0; i < 10 - qua.length(); i++) {
+				str += " ";
+			}
+		}
+		for (int i = 0; i < str.length(); i++) {
+			System.out.print("=");
+		}
+		System.out.println();
+		System.out.println("Qualifications");
+		for (int i = 0; i < str.length(); i++) {
+			System.out.print("-");
+		}
+		System.out.println();
+		System.out.println(str);
+		for (int i = 0; i < str.length(); i++) {
+			System.out.print("-");
+		}
+		System.out.println();
+		
+		System.out.print("Amount                   ");
+		for (String qua : qualificationResourceRelation.keySet()) {
+			List<String> ress = qualificationResourceRelation.get(qua);
+			int sum=0;
+			for(String res:ress){
+				sum+=resources.get(res).getMaxAmount();
+			}
+			System.out.print(sum);
+			for (int i = 0; i < 10 - String.valueOf(sum).length(); i++) {
+				System.out.print(" ");
+			}
+
+			
+		}
+		System.out.println();
+		for (int i = 0; i < str.length(); i++) {
+			System.out.print("-");
+		}
+		System.out.println();
+		
+		
+
+	}
+	
+	public void print() {
+		printQuaNum();
 		printQuaResRelationMap();
 		printResource();
 		printActivity();

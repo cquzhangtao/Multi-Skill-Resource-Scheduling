@@ -130,7 +130,7 @@ public abstract class AbstractORASlover {
 	 */
 	public void print() {
 	
-		problem.print();
+		//problem.print();
 		printTempData();
 		printFinalResults();
 		printTrackResults();

@@ -169,14 +169,18 @@ public class ORASolverWithAllActivities extends AbstractORASlover {
 				a.put(quaId, b);
 				int sum = 0;
 				for (String resID : sortRes) {
-					sum += unitedResultsCopy.get(quaId).get(resID);
+					int num=unitedResultsCopy.get(quaId).get(resID);
+					if(num==0){
+						continue;
+					}
+					sum += num;
 					if (sum < act.getMode().getQualificationAmountMap().get(quaId)) {
-						b.put(resID, unitedResultsCopy.get(quaId).get(resID));
+						b.put(resID, num);
 						
 						unitedResultsCopy.get(quaId).put(resID, 0);
 					}
 					else {
-						b.put(resID, unitedResultsCopy.get(quaId).get(resID) - (sum - act.getMode().getQualificationAmountMap().get(quaId)));
+						b.put(resID, num - (sum - act.getMode().getQualificationAmountMap().get(quaId)));
 						unitedResultsCopy.get(quaId).put(resID, sum - act.getMode().getQualificationAmountMap().get(quaId));
 						break;
 					}

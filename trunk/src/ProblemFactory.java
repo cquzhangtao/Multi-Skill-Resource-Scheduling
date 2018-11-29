@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import problem.Activity;
@@ -91,6 +92,96 @@ public class ProblemFactory {
 		act3.addQuaandNum(qua1, 5);
 		act3.addQuaandNum(qua2, 5);
 		actList.add(act3);
+		
+		
+		
+		for(Resource res:resList.values()) {
+			
+			Set<Integer> amount=new HashSet<Integer>();
+			for(int i=1;i<=res.getMaxAmount();i++) {
+				amount.add(i);
+			}
+			availableRes.put(res.getId(), amount);
+		}
+		
+		return model;
+
+	}
+	
+	
+	public static OverlappingResAllocProblem makeRandomExample() {
+		OverlappingResAllocProblem model=new OverlappingResAllocProblem();
+		Map<String, Resource>  resList=new HashMap<String, Resource> ();
+		model.setResources(resList);
+		Map<String, Qualification> qualifications=new HashMap<String, Qualification> ();
+		model.setQualifications(qualifications);
+		Map<String, List<String>> quaResRelationMap=new HashMap<String, List<String>>();;
+		model.setQualificationResourceRelation(quaResRelationMap);
+		
+		Map<String, Set<Integer>> availableRes=new HashMap<String, Set<Integer>>();
+		model.setAvailableResAmount(availableRes);
+		
+		List<Activity> actList = new ArrayList<Activity>();
+		model.setActList(actList);
+		
+	
+		int resourceNum=50;
+		int resourceAmount=100;
+		int qualificationNum=20;
+		int activityNum=200;
+		
+		double rnd1=0.3;
+		double rnd2=0.2;
+		
+		Random random=new Random(100);
+		// resource map
+		
+		for(int i=1;i<=resourceNum;i++){
+			Resource res = new Resource();
+			res.setResId("res"+i);
+			res.setTotal(1+random.nextInt(resourceAmount-1));
+			res.setCost(0.1+random.nextDouble());
+			resList.put(res.getId(),res);
+		}
+		
+		Map<Qualification,Integer>qualificationAmount=new HashMap<Qualification,Integer>();
+		
+		// make the relation
+		for(int i=1;i<=qualificationNum;i++){
+			Qualification qua = new Qualification("qua"+i);
+			qualifications.put(qua.getId(), qua);
+			List<String> list = new ArrayList<String>();
+			int sum=0;
+			for(Resource res:resList.values()){
+				
+				if(random.nextDouble()<rnd1){
+					list.add(res.getId());
+					sum+=res.getMaxAmount();
+				}
+			}
+			
+			qualificationAmount.put(qua, sum);
+			quaResRelationMap.put(qua.getId(), list);
+		}
+	
+	
+	
+		
+
+		// act
+		
+		for(int i=1;i<=activityNum;i++){
+			Activity act = new Activity();
+			for(Qualification qua:qualifications.values()){
+				if(random.nextDouble()<rnd2){
+					
+					act.addQuaandNum(qua, (int) (1+random.nextInt(qualificationAmount.get(qua)-1)/rnd2/activityNum));
+				}
+			}
+			actList.add(act);
+		}
+	
+
 		
 		
 		

@@ -59,7 +59,7 @@ public class ORASolverByExchangingResources extends ORAsolverToMinCost {
 	
 		for (String quaId : unitedResults.keySet()) {
 			for (String resID : unitedResults.get(quaId).keySet()) {
-				
+			
 				int index = sortedResList.indexOf(resID);
 				for (int i = 0; i < index; i++) {
 					if (unitedResults.get(quaId).get(resID) == null) {
