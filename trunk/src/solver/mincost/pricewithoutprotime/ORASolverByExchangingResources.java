@@ -58,8 +58,9 @@ public class ORASolverByExchangingResources extends ORAsolverToMinCost {
 	protected void solveByExchangeResource() {
 	
 		for (String quaId : unitedResults.keySet()) {
-			for (String resID : unitedResults.get(quaId).keySet()) {
-			
+			//for (String resID : unitedResults.get(quaId).keySet()) {
+			List<String> ress=new ArrayList<String>(unitedResults.get(quaId).keySet());
+			for(String resID :ress) {
 				int index = sortedResList.indexOf(resID);
 				for (int i = 0; i < index; i++) {
 					if (unitedResults.get(quaId).get(resID) == null) {

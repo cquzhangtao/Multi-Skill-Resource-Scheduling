@@ -9,9 +9,9 @@ public class Start {
 	public static void main(String[] args) {
 		OverlappingResAllocProblem problem = ProblemFactory.makeRandomExample();
 		problem.print();
-		//AbstractORASlover solver=new ORASolverWithAllActivities(problem);		
-		AbstractORASlover solver=new ORASolverByReducingActivities(problem);
-		//AbstractORASlover solver=new ORASolverByIteratingExchange(problem);
+		AbstractORASlover solver;//=new ORASolverWithAllActivities(problem);		
+		//solver=new ORASolverByReducingActivities(problem);
+		solver=new ORASolverByIteratingExchange(problem);
 		solver.solve(true,true);
 		//solver.print();
 
