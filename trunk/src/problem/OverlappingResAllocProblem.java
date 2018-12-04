@@ -151,8 +151,8 @@ public class OverlappingResAllocProblem {
 			if (res.getDummy()) {
 				continue;
 			}
-			System.out.print(res.getMaxAmount());
-			for (int i = 0; i < 12 - res.getMaxAmount().toString().length(); i++) {
+			System.out.print(res.getAvailableAmount());
+			for (int i = 0; i < 12 - res.getAvailableAmount().toString().length(); i++) {
 				System.out.print(" ");
 			}
 		}
@@ -285,7 +285,7 @@ public class OverlappingResAllocProblem {
 			List<String> ress = qualificationResourceRelation.get(qua);
 			int sum=0;
 			for(String res:ress){
-				sum+=resources.get(res).getMaxAmount();
+				sum+=resources.get(res).getAvailableAmount();
 			}
 			System.out.print(sum);
 			for (int i = 0; i < 10 - String.valueOf(sum).length(); i++) {

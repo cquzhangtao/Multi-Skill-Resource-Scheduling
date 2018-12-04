@@ -38,19 +38,19 @@ public class ProblemFactory {
 		
 		Resource res1 = new Resource();
 		res1.setResId("res1");
-		res1.setTotal(15);
+		res1.setTotalAmount(15);
 		res1.setCost(2.8);
 		resList.put(res1.getId(),res1);
 		
 	
 		Resource res2 = new Resource();
 		res2.setResId("res2");
-		res2.setTotal(22);
+		res2.setTotalAmount(22);
 		res2.setCost(3.1);
 		resList.put(res2.getId(),res2);
 		Resource res3 = new Resource();
 		res3.setResId("res3");
-		res3.setTotal(23);
+		res3.setTotalAmount(23);
 		res3.setCost(3.5);
 		resList.put(res3.getId(),res3);
 		// make the relation
@@ -98,7 +98,7 @@ public class ProblemFactory {
 		for(Resource res:resList.values()) {
 			
 			Set<Integer> amount=new HashSet<Integer>();
-			for(int i=1;i<=res.getMaxAmount();i++) {
+			for(int i=1;i<=res.getAvailableAmount();i++) {
 				amount.add(i);
 			}
 			availableRes.put(res.getId(), amount);
@@ -139,7 +139,7 @@ public class ProblemFactory {
 		for(int i=1;i<=resourceNum;i++){
 			Resource res = new Resource();
 			res.setResId("res"+i);
-			res.setTotal(1+random.nextInt(resourceAmount-1));
+			res.setTotalAmount(1+random.nextInt(resourceAmount-1));
 			res.setCost(0.1+random.nextDouble());
 			resList.put(res.getId(),res);
 		}
@@ -156,7 +156,7 @@ public class ProblemFactory {
 				
 				if(random.nextDouble()<rnd1){
 					list.add(res.getId());
-					sum+=res.getMaxAmount();
+					sum+=res.getAvailableAmount();
 				}
 			}
 			
@@ -188,7 +188,7 @@ public class ProblemFactory {
 		for(Resource res:resList.values()) {
 			
 			Set<Integer> amount=new HashSet<Integer>();
-			for(int i=1;i<=res.getMaxAmount();i++) {
+			for(int i=1;i<=res.getAvailableAmount();i++) {
 				amount.add(i);
 			}
 			availableRes.put(res.getId(), amount);
