@@ -1,4 +1,4 @@
-package problem;
+package model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class Activity extends Entity {
 	public boolean startable(long time) {
 		
 		for(Activity act:predecessors) {
-			if(!act.started||startTime+mode.getRawProcessingTime()<time) {
+			if(!act.started||act.startTime+act.mode.getProcessingTime()>time) {
 				return false;
 			}
 		}
@@ -38,6 +38,8 @@ public class Activity extends Entity {
 		
 		return mode;
 	}
+	
+	
 
 	public boolean getDummy() {
 		return false;
@@ -85,7 +87,7 @@ public class Activity extends Entity {
 	}
 	
 	public long getEndTime() {
-		return startTime+mode.getRawProcessingTime();
+		return startTime+mode.getProcessingTime();
 	}
 
 	public Map<String, Map<String, Integer>> getAssignment() {
@@ -94,6 +96,10 @@ public class Activity extends Entity {
 
 	public void setAssignment(Map<String, Map<String, Integer>> assignment) {
 		this.assignment = assignment;
+	}
+	
+	public String toString() {
+		return super.getId();
 	}
 
 }

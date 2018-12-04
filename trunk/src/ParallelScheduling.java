@@ -3,22 +3,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import problem.Activity;
-import problem.Resource;
+import model.Activity;
+import model.Model;
+import model.Resource;
+import solver.AbstractORASlover;
+import solver.mincost.pricewithoutprotime.ORASolverByIteratingExchange;
 
 public class ParallelScheduling {
 	
 	
 	private Map<String,Activity> unassignedActivities;
-	private List<Activity> processingActivities;
-	private Map<String,Resource> resources;
-	Map<String, List<String>> quaResRelationMap=new HashMap<String, List<String>>();
-	private long timeWindow=100;
+	private Model model;
+	private List<Activity> processingActivities=new ArrayList<Activity>();
+	private long timeWindow=3;
 	
 	
-	public ParallelScheduling(Map<String,Activity> activities,Map<String,Resource> resources) {
-		unassignedActivities=activities;
-		this.resources=resources;
+	public ParallelScheduling(Model model) {
+		this.model=model;
+		unassignedActivities=new HashMap<String,Activity>(model.getActivityMap());
 	}
 	
 	public List<Activity> getStartableActivities(long time){
@@ -33,16 +35,31 @@ public class ParallelScheduling {
 	
 	private Map<String, Map<String, Map<String, Integer>>> subsolve(Map<String,Resource> resources,
 			List<Activity> startableActivities) {
-		// TODO Auto-generated method stub
-		return null;
+		AbstractORASlover solver;
+		Model submodel=new Model(resources,startableActivities,model.getQualifications(),model.getQualificationResourceRelation());
+		//submodel.print();
+		solver=new ORASolverByIteratingExchange(submodel);
+		solver.solve();
+		//solver.print();
+		return solver.getResults();
 	}
 	
-	public void start(long time) {
+	public void run() {
+		start(0);
+	}
+	
+	private void start(long time) {
+		if(unassignedActivities.isEmpty()) {
+			return;
+		}
 		Map<String, Map<String, Map<String, Integer>>> results;
 		List<Activity> startableActivities=getStartableActivities(time);
-		results=subsolve(resources,startableActivities);
-		if(results!=null) {
-			long earliestEndTime=Long.MAX_VALUE;
+		System.out.println(time+": startable activities:"+startableActivities);
+		System.out.println(time+": proecssing activities:"+processingActivities);
+		results=subsolve(model.getResources(),startableActivities);
+		if(results!=null&&!results.isEmpty()) {
+			
+			
 			for(String actName:results.keySet()) {
 				
 				Map<String, Map<String, Integer>> qua=results.get(actName);
@@ -52,29 +69,37 @@ public class ParallelScheduling {
 				act.setAssignment(qua);
 				unassignedActivities.remove(actName);
 				processingActivities.add(act);
-				if(act.getEndTime()<earliestEndTime) {
-					earliestEndTime=act.getEndTime();
-				}
+			
 				
 				
 				
 				for(Map<String, Integer> ress:qua.values()) {
 					for(String res:ress.keySet() ) {
-						resources.get(res).seize(ress.get(res));
+						model.getResources().get(res).seize(ress.get(res));
 					}
 				}
 			}
-			time=earliestEndTime+timeWindow;
+			//time=earliestEndTime+timeWindow;
 		}else {
-			time=time+timeWindow;
+			//time=time+timeWindow;
 		}
+		
+		
+		long earliestEndTime=Long.MAX_VALUE;
+		for(Activity act:processingActivities) {
+			if(act.getEndTime()<earliestEndTime) {
+				earliestEndTime=act.getEndTime();
+			}
+		}
+		System.out.println(time+": earliest finished time "+earliestEndTime);
+		time=earliestEndTime+timeWindow;
 		
 		List<Activity> finishedActivities=new ArrayList<Activity>();
 		for(Activity act:processingActivities) {
 			if(act.getEndTime()<=time) {
 				for(Map<String, Integer> ress:act.getAssignment().values()) {
 					for(String res:ress.keySet() ) {
-						resources.get(res).release(ress.get(res));
+						model.getResources().get(res).release(ress.get(res));
 					}
 				}
 				finishedActivities.add(act);
@@ -82,6 +107,7 @@ public class ParallelScheduling {
 		}
 		
 		processingActivities.removeAll(finishedActivities);
+
 		start(time);
 		
 	}

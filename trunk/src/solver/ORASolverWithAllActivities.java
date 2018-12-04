@@ -10,11 +10,11 @@ import java.util.Set;
 
 import core.GraphElement;
 import core.GraphicSpace;
-import problem.Activity;
-import problem.ResourcesForOneActivity;
-import problem.OverlappingResAllocProblem;
-import problem.Qualification;
-import problem.Resource;
+import model.Activity;
+import model.Model;
+import model.Qualification;
+import model.Resource;
+import model.ResourcesForOneActivity;
 
 
 
@@ -52,7 +52,7 @@ public class ORASolverWithAllActivities extends AbstractORASlover {
 	 * 
 	 * @param problem
 	 */
-	public ORASolverWithAllActivities(OverlappingResAllocProblem problem) {
+	public ORASolverWithAllActivities(Model problem) {
 	
 		super(problem);
 	}
@@ -99,11 +99,11 @@ public class ORASolverWithAllActivities extends AbstractORASlover {
 	
 		graphicSpace.clear();
 		
-		for (String qua : problem.getQuaResRelationMap().keySet()) {
+		for (String qua : problem.getQualificationResourceRelation().keySet()) {
 			if (qua.equals("DUMMY")) {
 				continue;
 			}
-			GraphElement element = new GraphElement(qua, problem.getActList(), problem.getQuaResRelationMap(), totalResNumMap, usedResNumMap);
+			GraphElement element = new GraphElement(qua, problem.getActivities(), problem.getQualificationResourceRelation(), totalResNumMap, usedResNumMap);
 			if (element.getRequiredResNum() > element.getCurrentTotalAvailableResNum()) {
 				return false;
 			}
@@ -125,7 +125,7 @@ public class ORASolverWithAllActivities extends AbstractORASlover {
 	 */
 	protected Map<String, List<Activity>> combinedQuaActRelation() {
 	
-		for (Activity act : problem.getActList()) {
+		for (Activity act : problem.getActivities()) {
 			for (String quaId : act.getMode().getQualificationAmountMap().keySet()) {
 				if (!combinedQuaActRelation.containsKey(quaId)) {
 					

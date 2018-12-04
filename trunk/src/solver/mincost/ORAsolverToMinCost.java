@@ -4,9 +4,8 @@ package solver.mincost;
 import java.util.ArrayList;
 import java.util.List;
 
-
-import problem.OverlappingResAllocProblem;
-import problem.Resource;
+import model.Model;
+import model.Resource;
 import solver.maxactamount.ORASolverByReducingActivities;
 
 
@@ -30,7 +29,7 @@ public abstract class ORAsolverToMinCost extends ORASolverByReducingActivities {
 	
 	protected boolean tracking = true;
 	
-	public ORAsolverToMinCost(OverlappingResAllocProblem problem) {
+	public ORAsolverToMinCost(Model problem) {
 	
 		super(problem);
 		sortResourceByCost();
@@ -44,7 +43,7 @@ public abstract class ORAsolverToMinCost extends ORASolverByReducingActivities {
 	
 		double maxCost = 0l;
 		
-		for (Resource res : problem.getResMap().values()) {
+		for (Resource res : problem.getResources().values()) {
 			if (res.getDummy()) {
 				continue;
 			}

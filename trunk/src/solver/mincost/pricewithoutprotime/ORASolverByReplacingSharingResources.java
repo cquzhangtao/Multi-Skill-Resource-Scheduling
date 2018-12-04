@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import core.GraphElement;
-import problem.OverlappingResAllocProblem;
+import model.Model;
 
 
 
@@ -21,7 +21,7 @@ import problem.OverlappingResAllocProblem;
  */
 public class ORASolverByReplacingSharingResources extends ORASolverByExchangingResources {
 	
-	public ORASolverByReplacingSharingResources(OverlappingResAllocProblem problem) {
+	public ORASolverByReplacingSharingResources(Model problem) {
 	
 		super(problem);
 	}
@@ -65,7 +65,7 @@ public class ORASolverByReplacingSharingResources extends ORASolverByExchangingR
 				}
 				Map<String, Integer> unUsedResInCurrentQua = new HashMap<String, Integer>();
 				int sumUnused = 0;
-				for (String res : problem.getQuaResRelationMap().get(quaId)) {
+				for (String res : problem.getQualificationResourceRelation().get(quaId)) {
 					unUsedResInCurrentQua.put(res, totalResNumMap.get(res) - usedResNumMap.get(res));
 					sumUnused += totalResNumMap.get(res) - usedResNumMap.get(res);
 				}

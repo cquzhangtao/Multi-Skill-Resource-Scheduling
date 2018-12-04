@@ -1,4 +1,4 @@
-package problem;
+package model;
 
 public class Entity {
 	private String id;

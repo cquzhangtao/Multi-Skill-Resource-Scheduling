@@ -1,4 +1,4 @@
-package problem;
+package model;
 
 public class Resource extends Entity{
 
@@ -57,6 +57,17 @@ public class Resource extends Entity{
 
 	public void setAvailableAmount(int availableAmount) {
 		this.availableAmount = availableAmount;
+	}
+
+
+	private int index;
+	public void setIndex(int size) {
+		index=size;
+		
+	}
+	
+	public int getIndex() {
+		return index;
 	}
 
 

@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import problem.Activity;
-import problem.OverlappingResAllocProblem;
+import model.Activity;
+import model.Model;
 
 
 
@@ -21,7 +21,7 @@ public class ORASolverToMinCostWithTimeFurther extends ORASolverToMinCostWithTim
 	
 	protected List<Map<String, Map<String, Map<String, Integer>>>> resultsTracking = new ArrayList<Map<String, Map<String, Map<String, Integer>>>>();
 	
-	public ORASolverToMinCostWithTimeFurther(OverlappingResAllocProblem problem) {
+	public ORASolverToMinCostWithTimeFurther(Model problem) {
 	
 		super(problem);
 	}
@@ -75,7 +75,7 @@ public class ORASolverToMinCostWithTimeFurther extends ORASolverToMinCostWithTim
 	 */
 	private void exchange() {
 	
-		for (Activity act : problem.getActList()) {
+		for (Activity act : problem.getActivities()) {
 			for (String qua : results.get(act.getId()).keySet()) {
 				for (String resID : results.get(act.getId()).get(qua).keySet()) {
 					
@@ -89,7 +89,7 @@ public class ORASolverToMinCostWithTimeFurther extends ORASolverToMinCostWithTim
 							break;
 						}
 						int restNum = totalResNumMap.get(sortedResList.get(i)) - usedResNumMap.get(sortedResList.get(i));
-						if (restNum < 1 || !problem.getQuaResRelationMap().get(qua).contains(sortedResList.get(i))) {
+						if (restNum < 1 || !problem.getQualificationResourceRelation().get(qua).contains(sortedResList.get(i))) {
 							continue;
 						}
 						
@@ -124,12 +124,12 @@ public class ORASolverToMinCostWithTimeFurther extends ORASolverToMinCostWithTim
 	protected double getTotalCost() {
 	
 		long cost = 0l;
-		for (Activity act : problem.getActList()) {
+		for (Activity act : problem.getActivities()) {
 			for (String qua : results.get(act.getId()).keySet()) {
 				for (String res : results.get(act.getId()).get(qua).keySet()) {
 					int num = results.get(act.getId()).get(qua).get(res);
 					double price = sortedCostList.get(sortedResList.indexOf(res));
-					long time = act.getMode().getRawProcessingTime() / 3600;
+					long time = act.getMode().getProcessingTime() / 3600;
 					cost += num * price * time;
 				}
 			}

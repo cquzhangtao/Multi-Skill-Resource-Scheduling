@@ -1,7 +1,7 @@
 
 package solver.mincost.pricewithoutprotime;
 
-import problem.OverlappingResAllocProblem;
+import model.Model;
 
 /**
  * Call methods solveByReplaceOverlapping() and solveByExchangeResource() repeat
@@ -12,7 +12,7 @@ import problem.OverlappingResAllocProblem;
  */
 public class ORASolverByIteratingExchange extends ORASolverByReplacingSharingResources {
 	
-	public ORASolverByIteratingExchange(OverlappingResAllocProblem problem) {
+	public ORASolverByIteratingExchange(Model problem) {
 	
 		super(problem);
 		

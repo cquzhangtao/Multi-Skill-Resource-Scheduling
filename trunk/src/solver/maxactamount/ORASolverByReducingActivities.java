@@ -1,8 +1,8 @@
 
 package solver.maxactamount;
 
-import problem.Activity;
-import problem.OverlappingResAllocProblem;
+import model.Activity;
+import model.Model;
 import solver.ORASolverWithAllActivities;
 
 /**
@@ -16,7 +16,7 @@ import solver.ORASolverWithAllActivities;
  */
 public class ORASolverByReducingActivities extends ORASolverWithAllActivities {
 	
-	public ORASolverByReducingActivities(OverlappingResAllocProblem problem) {
+	public ORASolverByReducingActivities(Model problem) {
 	
 		super(problem);
 		
@@ -36,18 +36,18 @@ public class ORASolverByReducingActivities extends ORASolverWithAllActivities {
 	protected boolean solveByReducingActivity() {
 	
 		while (!solveWithAllActivities()) {
-			Activity lastAct = problem.getActList().get(problem.getActList().size() - 1);
-			problem.getActList().remove(lastAct);
+			Activity lastAct = problem.getActivities().get(problem.getActivities().size() - 1);
+			problem.getActivities().remove(lastAct);
 			unitedResults.clear();
 			results.clear();
 			for (String resId : usedResNumMap.keySet()) {
 				usedResNumMap.put(resId, 0);
 			}
-			if (problem.getActList().size() == 0) {
+			if (problem.getActivities().size() == 0) {
 				return false;
 			}
 		}
-		System.out.println("Started Activity num "+problem.getActList().size() );
+		System.out.println("Started Activity num "+problem.getActivities().size() );
 		return true;
 		
 	}

@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import problem.Activity;
-import problem.ResourcesForOneActivity;
-import problem.OverlappingResAllocProblem;
+import model.Activity;
+import model.Model;
+import model.ResourcesForOneActivity;
 import solver.mincost.ORAsolverToMinCost;
 
 
@@ -26,7 +26,7 @@ import solver.mincost.ORAsolverToMinCost;
 public class ORASolverToMinCostWithTime extends ORAsolverToMinCost {
 	
 		
-	public ORASolverToMinCostWithTime(OverlappingResAllocProblem problem) {
+	public ORASolverToMinCostWithTime(Model problem) {
 	
 		super(problem);
 		

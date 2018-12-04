@@ -1,7 +1,8 @@
 
-package problem;
+package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,12 +14,12 @@ import java.util.Set;
  * @author Shufang Xie, Tao Zhang
  * 
  */
-public class OverlappingResAllocProblem {
+public class Model {
 	
 	/**
 	 * Resource map in the simulation model
 	 */
-	private Map<String, Resource> resources;
+	private Map<String, Resource> resources=new HashMap<String,Resource>();
 	
 	/**
 	 * Qualification map
@@ -36,9 +37,11 @@ public class OverlappingResAllocProblem {
 	 * The activity list we need to allocate resources to. The resources are in
 	 * certain sequence in the list.
 	 */
-	private List<Activity> actList;
+	private List<Activity> activities=new ArrayList<Activity>();
 	
-	private Map<String, Set<Integer>> availableResAmount;
+	private Map<String,Activity> activityMap=new HashMap<String,Activity>();
+	
+	//private Map<String, Set<Integer>> availableResAmount;
 	
 	/**
 	 * Constructor
@@ -49,18 +52,18 @@ public class OverlappingResAllocProblem {
 	 * @param quaMap
 	 * @param resCostMap
 	 */
-	public OverlappingResAllocProblem(Map<String, Resource> resMap, Map<String, List<String>> quaResRelationMap, List<Activity> actList,
-			Map<String, Qualification> quaMap,  Map<String, Set<Integer>> availableResID) {
+	public Model(Map<String, Resource> resMap,List<Activity> actList, Map<String, Qualification> quaMap,Map<String, List<String>> quaResRelationMap 
+			) {
 	
 		this.resources = resMap;
 		this.qualifications = quaMap;
 		this.qualificationResourceRelation = quaResRelationMap;
-		this.actList = new ArrayList<Activity>(actList);
-		this.availableResAmount = availableResID;
+		this.activities = new ArrayList<Activity>(actList);
+		//this.availableResAmount = availableResID;
 		
 	}
 	
-	public OverlappingResAllocProblem() {
+	public Model() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -152,7 +155,7 @@ public class OverlappingResAllocProblem {
 				continue;
 			}
 			System.out.print(res.getAvailableAmount());
-			for (int i = 0; i < 12 - res.getAvailableAmount().toString().length(); i++) {
+			for (int i = 0; i < 12 - String.valueOf(res.getAvailableAmount()).length(); i++) {
 				System.out.print(" ");
 			}
 		}
@@ -213,7 +216,7 @@ public class OverlappingResAllocProblem {
 		}
 		System.out.println();
 		int n = 0;
-		for (Activity act : actList) {
+		for (Activity act : activities) {
 			n++;
 			if (n % 20 == 0) {
 				System.out.println(str);
@@ -313,62 +316,76 @@ public class OverlappingResAllocProblem {
 	
 
 	
-	public Map<String, Qualification> getQuaMap() {
+	//public Map<String, Qualification> getQuaMap() {
 	
-		return qualifications;
+	//	return qualifications;
+	//}
+	
+	//public void setQuaMap(Map<String, Qualification> quaMap) {
+	
+	//	this.qualifications = quaMap;
+	//}
+	
+	//public Map<String, Resource> getResMap() {
+	
+	//	return resources;
+	//}
+	
+	//public void setResMap(Map<String, Resource> res) {
+	
+	//	this.resources = res;
+	//}
+	
+	//public Map<String, List<String>> getQuaResRelationMap() {
+	
+	//	return qualificationResourceRelation;
+	//}
+	
+	//public void setQuaResRelationMap(Map<String, List<String>> qua) {
+	
+	//	this.qualificationResourceRelation = qua;
+	//}
+	
+	public List<Activity> getActivities() {
+	
+		return activities;
 	}
 	
-	public void setQuaMap(Map<String, Qualification> quaMap) {
-	
-		this.qualifications = quaMap;
+	public Map<String,Activity> getActivityMap(){
+		return activityMap;
 	}
 	
-	public Map<String, Resource> getResMap() {
+	//public void setActivities(List<Activity> actMap) {
+	//
+	//	this.activities = actMap;
+	//}
 	
-		return resources;
+	public void addActivity(Activity act) {
+		activities.add(act);
+		activityMap.put(act.getId(), act);
 	}
 	
-	public void setResMap(Map<String, Resource> res) {
+	//public Map<String, Set<Integer>> getAvailableResAmount() {
 	
-		this.resources = res;
-	}
+	//	return availableResAmount;
+	//}
 	
-	public Map<String, List<String>> getQuaResRelationMap() {
+	//public void setAvailableResAmount(Map<String, Set<Integer>> availableResID) {
 	
-		return qualificationResourceRelation;
-	}
-	
-	public void setQuaResRelationMap(Map<String, List<String>> qua) {
-	
-		this.qualificationResourceRelation = qua;
-	}
-	
-	public List<Activity> getActList() {
-	
-		return actList;
-	}
-	
-	public void setActList(List<Activity> actMap) {
-	
-		this.actList = actMap;
-	}
-	
-	public Map<String, Set<Integer>> getAvailableResAmount() {
-	
-		return availableResAmount;
-	}
-	
-	public void setAvailableResAmount(Map<String, Set<Integer>> availableResID) {
-	
-		this.availableResAmount = availableResID;
-	}
+	//	this.availableResAmount = availableResID;
+	//}
 
 	public Map<String, Resource> getResources() {
 		return resources;
 	}
 
-	public void setResources(Map<String, Resource> resources) {
-		this.resources = resources;
+	//public void setResources(Map<String, Resource> resources) {
+	//	this.resources = resources;
+	//}
+	
+	public void addResource(Resource res) {
+		res.setIndex(resources.size());
+		resources.put(res.getId(),res);
 	}
 
 	public Map<String, Qualification> getQualifications() {

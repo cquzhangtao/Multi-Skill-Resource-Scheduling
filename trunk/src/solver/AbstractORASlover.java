@@ -4,10 +4,10 @@ package solver;
 import java.util.HashMap;
 import java.util.Map;
 
-import problem.ResourcesForOneActivity;
-import problem.OverlappingResAllocProblem;
-import problem.Qualification;
-import problem.Resource;
+import model.Model;
+import model.Qualification;
+import model.Resource;
+import model.ResourcesForOneActivity;
 
 
 
@@ -25,7 +25,7 @@ public abstract class AbstractORASlover {
 	 * This is the problem we will solve. The problem includes all information
 	 * needed by the solver.
 	 */
-	protected OverlappingResAllocProblem problem;
+	protected Model problem;
 	
 	/**
 	 * The total available resources number before the solver starts. This
@@ -55,14 +55,14 @@ public abstract class AbstractORASlover {
 	 * 
 	 * @param problem
 	 */
-	public AbstractORASlover(OverlappingResAllocProblem problem) {
+	public AbstractORASlover(Model problem) {
 	
 		this.problem = problem;
-		for (Resource res : problem.getResMap().values()) {
+		for (Resource res : problem.getResources().values()) {
 			if (res.getDummy()) {
 				continue;
 			}
-			totalResNumMap.put(res.getId(), problem.getAvailableResAmount().get(res.getId()).size());
+			totalResNumMap.put(res.getId(), problem.getResources().get(res.getId()).getAvailableAmount());
 			usedResNumMap.put(res.getId(), 0);
 		}
 	}

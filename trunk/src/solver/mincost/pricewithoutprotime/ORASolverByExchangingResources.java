@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import problem.OverlappingResAllocProblem;
+import model.Model;
 import solver.mincost.ORAsolverToMinCost;
 
 
@@ -30,7 +30,7 @@ public class ORASolverByExchangingResources extends ORAsolverToMinCost {
 	 * 
 	 * @param problem
 	 */
-	public ORASolverByExchangingResources(OverlappingResAllocProblem problem) {
+	public ORASolverByExchangingResources(Model problem) {
 	
 		super(problem);
 		
@@ -71,7 +71,7 @@ public class ORASolverByExchangingResources extends ORAsolverToMinCost {
 						break;
 					}
 					int restNum = totalResNumMap.get(sortedResList.get(i)) - usedResNumMap.get(sortedResList.get(i));
-					if (restNum < 1 || !problem.getQuaResRelationMap().get(quaId).contains(sortedResList.get(i))) {
+					if (restNum < 1 || !problem.getQualificationResourceRelation().get(quaId).contains(sortedResList.get(i))) {
 						continue;
 					}
 					
