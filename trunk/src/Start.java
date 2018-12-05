@@ -26,7 +26,7 @@ public class Start {
 		ParallelScheduling scheduling=new ParallelScheduling(model);
 		scheduling.run();
 		
-		//show(model.getActivities());
+		show(model);
 		
 		for(Activity act:model.getActivities()) {
 			System.out.println(act.getId()+": "+act.getStartTime()+","+act.getEndTime());
@@ -35,14 +35,17 @@ public class Start {
 	}
 	
 	
-	public static void show(List<Activity> activities) {
+	public static void show(Model model) {
 		JFrame testFrame = new JFrame();
 	    testFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-	    final Chart comp = new Chart(activities);
-	    comp.setPreferredSize(new Dimension(800, 600));
+	    testFrame.setExtendedState( testFrame.getExtendedState()|JFrame.MAXIMIZED_BOTH );
+	    final Chart comp = new Chart(model);
+	    //comp.setPreferredSize(new Dimension(800, 600));
 	    testFrame.getContentPane().add(comp, BorderLayout.CENTER);
 	    testFrame.pack();
 	    testFrame.setVisible(true);
+	    
+	   
 	}
 
 }

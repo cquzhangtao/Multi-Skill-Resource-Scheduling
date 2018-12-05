@@ -28,17 +28,17 @@ public class Resource extends Entity{
 
 
 	public void setTotalAmount(int amount) {
-		this.amount=amount;
+		this.setAmount(amount);
 		setAvailableAmount(amount);
 		
 	}
 	
 	public void seize(int num) {
-		amount-=num;
+		availableAmount-= num;
 	}
 	
 	public void release(int num) {
-		amount+=num;
+		availableAmount +=num;
 	}
 	
 	private double cost;
@@ -68,6 +68,18 @@ public class Resource extends Entity{
 	
 	public int getIndex() {
 		return index;
+	}
+
+
+
+	public int getAmount() {
+		return amount;
+	}
+
+
+
+	public void setAmount(int amount) {
+		this.amount = amount;
 	}
 
 

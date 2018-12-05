@@ -324,6 +324,86 @@ public class ModelFactory {
 		return model;
 
 	}
+	
+	public static Model makeSimpleModel() {
+		Model model=new Model();
+		//Map<String, Resource>  resList=new HashMap<String, Resource> ();
+		//model.setResources(resList);
+		Map<String, Qualification> qualifications=new HashMap<String, Qualification> ();
+		model.setQualifications(qualifications);
+		Map<String, List<String>> quaResRelationMap=new HashMap<String, List<String>>();;
+		model.setQualificationResourceRelation(quaResRelationMap);
+				
+		// resource map
+		
+		Resource res1 = new Resource();
+		res1.setResId("res1");
+		res1.setTotalAmount(1);
+		res1.setCost(2.8);
+		model.addResource(res1);
+		
+	
+		Resource res2 = new Resource();
+		res2.setResId("res2");
+		res2.setTotalAmount(1);
+		res2.setCost(3.1);
+		model.addResource(res2);
+		
+		
+		// make the relation
+		
+		List<String> list1 = new ArrayList<String>();
+		list1.add(res1.getId());
+		list1.add(res2.getId());
+		Qualification qua1 = new Qualification("qua1");		
+		quaResRelationMap.put(qua1.getId(), list1);
+		
+		List<String> list2 = new ArrayList<String>();
+		list2.add(res1.getId());
+		Qualification qua2 = new Qualification("qua2");
+		quaResRelationMap.put(qua2.getId(), list2);
+		
+		List<String> list3 = new ArrayList<String>();
+		list3.add(res1.getId());
+		list3.add(res2.getId());
+		Qualification qua3 = new Qualification("qua3");
+		quaResRelationMap.put(qua3.getId(), list3);
+		
+		
+		
+		// act
+	
+		Activity act1 = new Activity();
+		act1.getMode().setProcessingTime(5);
+		act1.addQuaandNum(qua1, 1);
+		model.addActivity(act1);
+
+		Activity act2 = new Activity();
+		act2.getMode().setProcessingTime(6);
+		act2.addQuaandNum(qua1, 1);
+		model.addActivity(act2);
+
+		Activity act3 = new Activity();
+		act3.getMode().setProcessingTime(8);
+		act3.addQuaandNum(qua3, 1);
+		model.addActivity(act3);
+		
+		
+		Activity act4 = new Activity();
+		act4.getMode().setProcessingTime(11);
+		act4.addQuaandNum(qua2, 1);
+		model.addActivity(act4);
+
+		
+		act3.getPredecessors().add(act1);
+		act4.getPredecessors().add(act2);
+		
+		
+	
+		
+		return model;
+
+	}
 
 	
 }

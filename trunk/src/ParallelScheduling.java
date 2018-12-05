@@ -1,7 +1,11 @@
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import model.Activity;
 import model.Model;
@@ -13,9 +17,10 @@ public class ParallelScheduling {
 	
 	
 	private Map<String,Activity> unassignedActivities;
+	private List<Activity> assignedActivities=new ArrayList<Activity>();;
 	private Model model;
 	private List<Activity> processingActivities=new ArrayList<Activity>();
-	private long timeWindow=3;
+	private long timeWindow=10;
 	
 	
 	public ParallelScheduling(Model model) {
@@ -37,15 +42,61 @@ public class ParallelScheduling {
 			List<Activity> startableActivities) {
 		AbstractORASlover solver;
 		Model submodel=new Model(resources,startableActivities,model.getQualifications(),model.getQualificationResourceRelation());
-		//submodel.print();
+		submodel.print();
 		solver=new ORASolverByIteratingExchange(submodel);
 		solver.solve();
-		//solver.print();
+		solver.print();
 		return solver.getResults();
 	}
 	
 	public void run() {
 		start(0);
+	}
+	
+	
+	private void pushBack(Activity activity) {
+		Map<Resource, List<TimeSlice>> slices = generate();
+		long earliestTime=Long.MIN_VALUE;
+		for(Activity act:activity.getPredecessors()) {
+			if(earliestTime<act.getEndTime()) {
+				earliestTime=act.getEndTime();
+			}
+		}
+		
+		Map<String, Integer> requirment=new HashMap<String, Integer>();
+		for(Map<String, Integer> assignment:activity.getAssignment().values()) {
+			for(String res:assignment.keySet()) {
+				if(!requirment.containsKey(res)) {
+					requirment.put(res, 0);
+				}
+				requirment.put(res, requirment.get(res)+assignment.get(res));
+			}
+		}
+		
+		long earliestTimeRes=Long.MIN_VALUE;
+		for(String resName:requirment.keySet()) {
+			int amount=requirment.get(resName);
+			Resource res=model.getResources().get(resName);
+			List<TimeSlice> slice = slices.get(res);
+			if(slice==null) {
+				continue;
+			}
+			//long time=activity.getStartTime();
+			long time=slice.get(slice.size()-1).getEnd();
+			for(int i=slice.size()-1;i>=0;i--) {
+				TimeSlice ts=slice.get(i);
+				if(res.getAmount()-ts.getAmount()>=amount) {
+					time=ts.getStart();
+				}else {
+					break;
+				}
+			}
+			if(earliestTimeRes<time) {
+				earliestTimeRes=time;
+			}
+		}
+		
+		activity.setStartTime(Long.max(0,Long.max(earliestTime, earliestTimeRes)));
 	}
 	
 	private void start(long time) {
@@ -67,7 +118,9 @@ public class ParallelScheduling {
 				act.setStarted(true);
 				act.setStartTime(time);
 				act.setAssignment(qua);
+				pushBack(act);
 				unassignedActivities.remove(actName);
+				assignedActivities.add(act);
 				processingActivities.add(act);
 			
 				
@@ -110,6 +163,66 @@ public class ParallelScheduling {
 
 		start(time);
 		
+	}
+	
+	
+	private Map<Resource, List<TimeSlice>> generate() {
+		Map<Resource, Set<Long>> timePoints = new HashMap<Resource, Set<Long>>();
+		Map<Resource, List<TimeSlice>> slices = new HashMap<Resource, List<TimeSlice>>();
+
+		for (Activity act : assignedActivities) {
+			Map<String, Map<String, Integer>> assignment = act.getAssignment();
+
+			for (Map<String, Integer> ress : assignment.values()) {
+				for (String res : ress.keySet()) {
+
+					Set<Long> points = timePoints.get(model.getResources().get(res));
+					if (points == null) {
+						points = new HashSet<Long>();
+						timePoints.put(model.getResources().get(res), points);
+					}
+
+					points.add(act.getStartTime());
+
+					points.add(act.getEndTime());
+
+				}
+			}
+		}
+
+		for (Resource res : timePoints.keySet()) {
+			Set<Long> points = timePoints.get(res);
+			ArrayList<Long> sortedPoints = new ArrayList<Long>(new TreeSet<Long>(points));
+			List<TimeSlice> slice = new ArrayList<TimeSlice>();
+			slices.put(res, slice);
+			for (int i = 0; i < sortedPoints.size() - 1; i++) {
+				TimeSlice ts = new TimeSlice(sortedPoints.get(i), sortedPoints.get(i + 1));
+				slice.add(ts);
+			}
+		}
+
+		for (Activity act : assignedActivities) {
+			Map<String, Map<String, Integer>> assignment = act.getAssignment();
+
+			for (Map<String, Integer> ress : assignment.values()) {
+				for (String res : ress.keySet()) {
+					int amount = ress.get(res);
+					List<TimeSlice> slice = slices.get(model.getResources().get(res));
+
+					for (TimeSlice ts : slice) {
+
+						if (act.getStartTime() <= ts.getStart() && act.getEndTime() >= ts.getEnd()) {
+							ts.addActivity(act, amount);
+							ts.addAmount(amount);
+
+						}
+					}
+				}
+
+			}
+		}
+		return slices;
+
 	}
 
 
