@@ -22,7 +22,8 @@ public class Start {
 		solver.solve(true,true);
 		//solver.print();*/
 		
-		Model model=ModelFactory.makeFullModel();
+		Model model=ModelFactory.makeSimpleModel();
+		model.print();
 		ParallelScheduling scheduling=new ParallelScheduling(model);
 		scheduling.run();
 		
