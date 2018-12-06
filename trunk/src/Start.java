@@ -24,7 +24,10 @@ public class Start {
 		
 		Model model=ModelFactory.makeSimpleModel();
 		model.print();
+		
+		
 		ParallelScheduling scheduling=new ParallelScheduling(model);
+		//SerialScheduling scheduling=new SerialScheduling(model);
 		scheduling.run();
 		
 		show(model);
