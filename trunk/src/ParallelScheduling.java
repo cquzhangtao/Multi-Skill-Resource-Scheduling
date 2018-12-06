@@ -20,7 +20,7 @@ public class ParallelScheduling {
 	private List<Activity> assignedActivities=new ArrayList<Activity>();;
 	private Model model;
 	private List<Activity> processingActivities=new ArrayList<Activity>();
-	private long timeWindow=10;
+	private long timeWindow=0;
 	
 	
 	public ParallelScheduling(Model model) {
