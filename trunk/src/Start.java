@@ -22,7 +22,7 @@ public class Start {
 		solver.solve(true,true);
 		//solver.print();*/
 		
-		Model model=ModelFactory.makeSimpleModel();
+		Model model=ModelFactory.makeFullModel();
 		model.print();
 		
 		
