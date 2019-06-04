@@ -6,6 +6,7 @@ import java.util.Map;
 import com.google.ortools.linearsolver.MPConstraint;
 import com.google.ortools.linearsolver.MPObjective;
 import com.google.ortools.linearsolver.MPSolver;
+import com.google.ortools.linearsolver.MPSolverParameters;
 import com.google.ortools.linearsolver.MPVariable;
 
 import model.Activity;
@@ -27,9 +28,14 @@ public class ORASolverByMIP extends AbstractORASlover {
 	}
 
 	protected boolean solveWithAllActivities(boolean tracking) {
-
-		MPSolver solver = new MPSolver("SimpleMipProgram", MPSolver.OptimizationProblemType.GLOP_LINEAR_PROGRAMMING);
+		
+		MPSolver solver = new MPSolver("SimpleMipProgram", MPSolver.OptimizationProblemType.BOP_INTEGER_PROGRAMMING);
 		//solver.setSolverSpecificParametersAsString(arg0)
+		if(problem.getActivities().size()>62) {
+			solver.setTimeLimit(1);
+		}else {
+			solver.setTimeLimit(10*1000);
+		}
 		// double infinity = java.lang.Double.POSITIVE_INFINITY;
 
 		Map<String, MPVariable> variables = new HashMap<String, MPVariable>();
@@ -107,10 +113,10 @@ public class ORASolverByMIP extends AbstractORASlover {
 
 		}
 		objective.setMinimization();
-
+	
 		final MPSolver.ResultStatus resultStatus = solver.solve();
 		// Check that the problem has an optimal solution.
-		if (resultStatus != MPSolver.ResultStatus.OPTIMAL) {
+		if (resultStatus != MPSolver.ResultStatus.FEASIBLE) {
 			// System.err.println("The problem does not have an optimal solution!");
 			return false;
 		}
@@ -160,12 +166,12 @@ public class ORASolverByMIP extends AbstractORASlover {
 		// System.out.println("y = " + y.solutionValue());
 
 		
-		  System.out.println("\nAdvanced usage:");
-		  System.out.println("Problem solved in " + solver.wallTime() +
-		  " milliseconds"); System.out.println("Problem solved in " +
-		  solver.iterations() + " iterations"); System.out.println("Problem solved in "
-		  + solver.nodes() + " branch-and-bound nodes");
-		 
+//		  System.out.println("\nAdvanced usage:");
+//		  System.out.println("Problem solved in " + solver.wallTime() +
+//		  " milliseconds"); System.out.println("Problem solved in " +
+//		  solver.iterations() + " iterations"); System.out.println("Problem solved in "
+//		  + solver.nodes() + " branch-and-bound nodes");
+//		 
 
 		return true;
 	}
