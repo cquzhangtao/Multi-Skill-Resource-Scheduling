@@ -1,4 +1,4 @@
-package solver.cp;
+package solver.or;
 
 
 import com.google.ortools.linearsolver.MPConstraint;

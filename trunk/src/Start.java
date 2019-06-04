@@ -8,9 +8,10 @@ import model.Activity;
 import model.Model;
 import solver.AbstractORASlover;
 import solver.ORASolverWithAllActivities;
-import solver.cp.ORASolverByMIP;
 import solver.maxactamount.ORASolverByReducingActivities;
 import solver.mincost.pricewithoutprotime.ORASolverByIteratingExchange;
+import solver.or.ORASolverByCP;
+import solver.or.ORASolverByMIP;
 
 public class Start {
 	static {
@@ -23,7 +24,8 @@ public class Start {
 		//solver=new ORASolverWithAllActivities(problem);		
 		//solver=new ORASolverByReducingActivities(problem);
 		//solver=new ORASolverByIteratingExchange(problem);
-		solver=new ORASolverByMIP(problem);
+		//solver=new ORASolverByMIP(problem);
+		solver=new ORASolverByCP(problem);
 		solver.solve(false,false);
 		//solver.print();
 

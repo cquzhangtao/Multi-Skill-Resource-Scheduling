@@ -1,6 +1,8 @@
-package solver.cp;
+package solver.or;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.ortools.linearsolver.MPConstraint;
@@ -8,6 +10,10 @@ import com.google.ortools.linearsolver.MPObjective;
 import com.google.ortools.linearsolver.MPSolver;
 import com.google.ortools.linearsolver.MPSolverParameters;
 import com.google.ortools.linearsolver.MPVariable;
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.CpSolver;
+import com.google.ortools.sat.IntVar;
+import com.google.ortools.sat.LinearExpr;
 
 import model.Activity;
 import model.Model;
@@ -15,9 +21,9 @@ import model.Qualification;
 import model.Resource;
 import solver.AbstractORASlover;
 
-public class ORASolverByMIP extends AbstractORASlover {
+public class ORASolverByCP extends AbstractORASlover {
 
-	public ORASolverByMIP(Model problem) {
+	public ORASolverByCP(Model problem) {
 		super(problem);
 	}
 
@@ -28,17 +34,17 @@ public class ORASolverByMIP extends AbstractORASlover {
 	}
 
 	protected boolean solveWithAllActivities(boolean tracking) {
-		
-		MPSolver solver = new MPSolver("SimpleMipProgram", MPSolver.OptimizationProblemType.BOP_INTEGER_PROGRAMMING);
+		 CpModel model = new CpModel();
+	//	MPSolver solver = new MPSolver("SimpleMipProgram", MPSolver.OptimizationProblemType.CLP_LINEAR_PROGRAMMING);
 		//solver.setSolverSpecificParametersAsString(arg0)
-		if(problem.getActivities().size()>62) {
+		/*if(problem.getActivities().size()>62) {
 			solver.setTimeLimit(1);
 		}else {
 			solver.setTimeLimit(10*1000);
-		}
+		}*/
 		// double infinity = java.lang.Double.POSITIVE_INFINITY;
 
-		Map<String, MPVariable> variables = new HashMap<String, MPVariable>();
+		Map<String, IntVar> variables = new HashMap<String, IntVar>();
 		for (Activity act : problem.getActivities()) {
 			for (Qualification qua : problem.getQualifications().values()) {
 				if (!act.getMode().getQualificationAmountMap().containsKey(qua.getId())) {
@@ -49,7 +55,7 @@ public class ORASolverByMIP extends AbstractORASlover {
 						continue;
 					}
 					String key = act.getId() + "_" + qua.getId() + "_" + res.getId();
-					variables.put(key, solver.makeIntVar(0.0, res.getAmount(), key));
+					variables.put(key, model.newIntVar(0, res.getAmount(), key));
 					//variables.put(key, solver.makeNumVar(0.0, res.getAmount(), key));
 				}
 			}
@@ -62,75 +68,97 @@ public class ORASolverByMIP extends AbstractORASlover {
 				if (needed == null) {
 					continue;
 				}
-
-				MPConstraint constraint = solver.makeConstraint();
-				constraint.setBounds(needed, needed);
+				
+				//MPConstraint constraint = solver.makeConstraint();
+				//constraint.setBounds(needed, needed);
+				List<IntVar> vars=new ArrayList<IntVar>();
 				for (Resource res : problem.getResources().values()) {
-					String key = act.getId() + "_" + qua.getId() + "_" + res.getId();
-					MPVariable var = variables.get(key);
-					if (var == null) {
+					if (!problem.getQualificationResourceRelation().get(qua.getId()).contains(res.getId())) {
 						continue;
 					}
-					constraint.setCoefficient(var, 1);
+					String key = act.getId() + "_" + qua.getId() + "_" + res.getId();
+					IntVar var = variables.get(key);
+					vars.add(var);
+					//constraint.setCoefficient(var, 1);
+					
 
 				}
+				
+				model.addLinearConstraint(LinearExpr.sum(vars.toArray(new IntVar[0])), needed, needed);
 			}
 
 		}
 
 		for (Resource res : problem.getResources().values()) {
 			int have = res.getAmount();
-			MPConstraint constraint = solver.makeConstraint();
-			constraint.setBounds(0, have);
+			//MPConstraint constraint = solver.makeConstraint();
+			//constraint.setBounds(0, have);
+			List<IntVar> vars=new ArrayList<IntVar>();
 			for (Activity act : problem.getActivities()) {
 				for (Qualification qua : problem.getQualifications().values()) {
 					String key = act.getId() + "_" + qua.getId() + "_" + res.getId();
-					MPVariable var = variables.get(key);
+					IntVar var = variables.get(key);
 					if (var == null) {
 						continue;
 					}
-					constraint.setCoefficient(var, 1);
+					vars.add(var);
 				}
 			}
+			model.addLinearConstraint(LinearExpr.sum(vars.toArray(new IntVar[0])), 0, have);
+			
 		}
 
 		// System.out.println("Number of constraints = " + solver.numConstraints());
 
-		MPObjective objective = solver.objective();
-
+		//MPObjective objective = solver.objective();
+		List<IntVar> vars=new ArrayList<IntVar>();
+		List<Integer> costs=new ArrayList<Integer>();
+		int scale=1000000;
 		for (Activity act : problem.getActivities()) {
 			for (Qualification qua : problem.getQualifications().values()) {
 				for (Resource res : problem.getResources().values()) {
 					String key = act.getId() + "_" + qua.getId() + "_" + res.getId();
-					MPVariable var = variables.get(key);
+					IntVar var = variables.get(key);
 					if (var == null) {
 						continue;
 					}
-					objective.setCoefficient(var, res.getCost());
-
+					//objective.setCoefficient(var, res.getCost());
+					vars.add(var);
+					costs.add( (int) (res.getCost()*scale));
+					
 				}
 			}
 
 		}
-		objective.setMinimization();
+		
+		int[] coefficients=new int[costs.size()];
+		int idx=0;
+		for(Integer cost:costs) {			
+			coefficients[idx]=cost;
+			idx++;
+		}
+		
+		model.minimize(LinearExpr.scalProd(vars.toArray(new IntVar[0]),coefficients));
+
+		//objective.setMinimization();
+		
+		 CpSolver solver = new CpSolver();
+		    VarArraySolutionPrinterWithObjective cb =
+		        new VarArraySolutionPrinterWithObjective(variables.values().toArray(new IntVar[0]));
+		    solver.solveWithSolutionCallback(model, cb);
+		   // solver.searchAllSolutions(model, cb);
+		   
+		   // System.out.println(cb.getSolutionCount() + " solutions found.");
 	
-		final MPSolver.ResultStatus resultStatus = solver.solve();
-		// Check that the problem has an optimal solution.
-		if (resultStatus != MPSolver.ResultStatus.FEASIBLE) {
+		if (cb.getSolutionCount() ==0) {
 			// System.err.println("The problem does not have an optimal solution!");
 			return false;
 		}
-		// Verify that the solution satisfies all constraints (when using solvers
-		// others than GLOP_LINEAR_PROGRAMMING, this is highly recommended!).
-		if (!solver.verifySolution(/* tolerance= */1e-7, /* log_errors= */true)) {
-			System.err.println(
-					"The solution returned by the solver violated the" + " problem constraints by at least 1e-7");
-			return false;
-		}
+		
 
 		// System.out.println("Solution:");
-		System.out.println("Objective value = " + objective.value());
-
+		System.out.println("Objective value = " + solver.objectiveValue());
+	
 		Map<Resource, Integer> count = new HashMap<Resource, Integer>();
 		for (Activity act : problem.getActivities()) {
 			Map<String, Map<String, Integer>> quas = new HashMap<String, Map<String, Integer>>();
@@ -143,17 +171,14 @@ public class ORASolverByMIP extends AbstractORASlover {
 				quas.put(qua.getId(), ress);
 				for (Resource res : problem.getResources().values()) {
 					String key = act.getId() + "_" + qua.getId() + "_" + res.getId();
-					MPVariable var = variables.get(key);
+					IntVar var = variables.get(key);
 					if (var == null) {
 						continue;
 					}
-					int num=(int) var.solutionValue();
-					ress.put(res.getId(), num);
+					long num=cb.value(var);
+					ress.put(res.getId(), (int) num);
 					
-					if(Math.abs(num-var.solutionValue())>0.000001) {
-						System.err.println("Algorithm wrong! not integer number");
-						
-					}
+					
 					
 					// System.out.println(act.getMode().getQualificationAmountMap().get(qua.getId())+",
 					// "+key+" = " + var.solutionValue()+", "+res.getAmount());
