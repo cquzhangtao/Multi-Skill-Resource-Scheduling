@@ -8,21 +8,27 @@ import model.Activity;
 import model.Model;
 import solver.AbstractORASlover;
 import solver.ORASolverWithAllActivities;
+import solver.cp.ORASolverByMIP;
 import solver.maxactamount.ORASolverByReducingActivities;
 import solver.mincost.pricewithoutprotime.ORASolverByIteratingExchange;
 
 public class Start {
-
+	static {
+		System.loadLibrary("jniortools");
+	}
 	public static void main(String[] args) {
-		/*Model problem = ModelFactory.makeRandomExample();
+		Model problem = ModelFactory.makeRandomExample();
 		problem.print();
-		AbstractORASlover solver;//=new ORASolverWithAllActivities(problem);		
+		AbstractORASlover solver;//
+		//solver=new ORASolverWithAllActivities(problem);		
 		//solver=new ORASolverByReducingActivities(problem);
-		solver=new ORASolverByIteratingExchange(problem);
-		solver.solve(true,true);
-		//solver.print();*/
+		//solver=new ORASolverByIteratingExchange(problem);
+		solver=new ORASolverByMIP(problem);
+		solver.solve(false,false);
+		//solver.print();
+
 		
-		Model model=ModelFactory.makeFullModel();
+		/*Model model=ModelFactory.makeFullModel();
 		model.print();
 		
 		
@@ -34,7 +40,7 @@ public class Start {
 		
 		for(Activity act:model.getActivities()) {
 			System.out.println(act.getId()+": "+act.getStartTime()+","+act.getEndTime());
-		}
+		}*/
 
 	}
 	

@@ -4,6 +4,9 @@ package solver;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.ortools.linearsolver.MPVariable;
+
+import model.Activity;
 import model.Model;
 import model.Qualification;
 import model.Resource;
@@ -111,6 +114,7 @@ public abstract class AbstractORASlover {
 	
 		if (start(tracking)) {
 			generateResults();
+			validateResults();
 			if (print) {
 				print();
 			}
@@ -167,6 +171,46 @@ public abstract class AbstractORASlover {
 	public Map<String, Map<String, Map<String, Integer>>> getResults() {
 	
 		return results;
+	}
+	
+	
+	public void validateResults() {
+		Map<Resource,Integer> count=new HashMap<Resource,Integer>();
+		for(Activity act:problem.getActivities()) {			
+			for(Qualification qua:problem.getQualifications().values()) {
+				if(!act.getMode().getQualificationAmountMap().containsKey(qua.getId())) {
+					continue;
+				}
+				int sum=0;
+				for(Resource res:problem.getResources().values()) {
+					if(!problem.getQualificationResourceRelation().get(qua.getId()).contains(res.getId())) {
+						continue;
+					}
+					Integer num=results.get(act.getId()).get(qua.getId()).get(res.getId());
+					if(num==null) {
+						continue;
+					}
+					sum+=num;
+					//System.out.println(act.getMode().getQualificationAmountMap().get(qua.getId())+", "+key+" = " + var.solutionValue()+", "+res.getAmount());
+					
+					if(!count.containsKey(res)) {
+						count.put(res, 0);
+					}
+					int add=(int) (count.get(res)+num);
+					if(add>res.getAmount()) {
+						System.out.println("Algorithm wrong");
+						System.exit(0);
+					}
+					count.put(res, add);
+
+				}
+				if(sum!=act.getMode().getQualificationAmountMap().get(qua.getId())) {
+					System.out.println("Algorithm wrong");
+					System.exit(0);
+				}
+			}
+			
+		}
 	}
 	
 }
