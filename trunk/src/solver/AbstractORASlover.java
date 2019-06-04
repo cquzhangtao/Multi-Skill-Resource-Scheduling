@@ -135,9 +135,9 @@ public abstract class AbstractORASlover {
 	public void print() {
 	
 		//problem.print();
-		printTempData();
+		//printTempData();
 		printFinalResults();
-		printTrackResults();
+		//printTrackResults();
 		
 	}
 	
@@ -147,19 +147,24 @@ public abstract class AbstractORASlover {
 	protected void printFinalResults() {
 		System.out.println("=========================================");
 		System.out.println("Results in detail");
+		double cost=0;
 		for (String act : results.keySet()) {
 			System.out.println("----------------------------------------------------");
 			System.out.println("Activity:" + act);
 			for (String qua : results.get(act).keySet()) {
-				System.out.println("        Qualificaiton:" + qua);
+				System.out.println("        Qualificaiton:" + qua+", "+problem.getActivityMap().get(act).getMode().getQualificationAmountMap().get(qua));
 				for (String res : results.get(act).get(qua).keySet()) {
-					System.out.println("                        Resource:" + res+", Amount: "+results.get(act).get(qua).get(res));
+					int num=results.get(act).get(qua).get(res);
+					Resource reso = problem.getResources().get(res);
+					cost+=num*reso.getCost();
+					System.out.println("                        Resource:" + res+"("+reso.getAmount()+"), Amount: "+num);
 					
 				}
 			}
 			
 		}
 		System.out.println("----------------------------------------------------");
+		System.out.println("Started activities: "+problem.getActivities().size()+", Objective "+cost);
 	}
 	
 	/**
@@ -198,14 +203,15 @@ public abstract class AbstractORASlover {
 					}
 					int add=(int) (count.get(res)+num);
 					if(add>res.getAmount()) {
-						System.out.println("Algorithm wrong");
+						System.out.println("Algorithm wrong R");
 						System.exit(0);
 					}
 					count.put(res, add);
 
 				}
-				if(sum!=act.getMode().getQualificationAmountMap().get(qua.getId())) {
-					System.out.println("Algorithm wrong");
+				int need = act.getMode().getQualificationAmountMap().get(qua.getId());
+				if(sum!=need) {
+					System.out.println("Algorithm wrong Q, "+sum+","+need);
 					System.exit(0);
 				}
 			}

@@ -23,11 +23,11 @@ public class Start {
 		AbstractORASlover solver;//
 		//solver=new ORASolverWithAllActivities(problem);		
 		//solver=new ORASolverByReducingActivities(problem);
-		//solver=new ORASolverByIteratingExchange(problem);
+		solver=new ORASolverByIteratingExchange(problem);
 		//solver=new ORASolverByMIP(problem);
-		solver=new ORASolverByCP(problem);
+		//solver=new ORASolverByCP(problem);
 		solver.solve(false,false);
-		//solver.print();
+		solver.print();
 
 		
 		/*Model model=ModelFactory.makeFullModel();

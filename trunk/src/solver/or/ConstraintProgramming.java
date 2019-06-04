@@ -53,11 +53,11 @@ class VarArraySolutionPrinterWithObjective extends CpSolverSolutionCallback {
 
     @Override
     public void onSolutionCallback() {
-      System.out.printf("Solution #%d: time = %.02f s%n", solutionCount, wallTime());
+     /* System.out.printf("Solution #%d: time = %.02f s%n", solutionCount, wallTime());
       System.out.printf("  objective value = %f%n", objectiveValue());
       for (IntVar v : variableArray) {
         System.out.printf("  %s = %d%n", v.getName(), value(v));
-      }
+      }*/
       solutionCount++;
     }
     

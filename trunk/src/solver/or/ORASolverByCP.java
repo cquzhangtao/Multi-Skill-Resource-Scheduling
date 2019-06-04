@@ -35,14 +35,6 @@ public class ORASolverByCP extends AbstractORASlover {
 
 	protected boolean solveWithAllActivities(boolean tracking) {
 		 CpModel model = new CpModel();
-	//	MPSolver solver = new MPSolver("SimpleMipProgram", MPSolver.OptimizationProblemType.CLP_LINEAR_PROGRAMMING);
-		//solver.setSolverSpecificParametersAsString(arg0)
-		/*if(problem.getActivities().size()>62) {
-			solver.setTimeLimit(1);
-		}else {
-			solver.setTimeLimit(10*1000);
-		}*/
-		// double infinity = java.lang.Double.POSITIVE_INFINITY;
 
 		Map<String, IntVar> variables = new HashMap<String, IntVar>();
 		for (Activity act : problem.getActivities()) {
@@ -56,7 +48,6 @@ public class ORASolverByCP extends AbstractORASlover {
 					}
 					String key = act.getId() + "_" + qua.getId() + "_" + res.getId();
 					variables.put(key, model.newIntVar(0, res.getAmount(), key));
-					//variables.put(key, solver.makeNumVar(0.0, res.getAmount(), key));
 				}
 			}
 		}
@@ -68,9 +59,7 @@ public class ORASolverByCP extends AbstractORASlover {
 				if (needed == null) {
 					continue;
 				}
-				
-				//MPConstraint constraint = solver.makeConstraint();
-				//constraint.setBounds(needed, needed);
+
 				List<IntVar> vars=new ArrayList<IntVar>();
 				for (Resource res : problem.getResources().values()) {
 					if (!problem.getQualificationResourceRelation().get(qua.getId()).contains(res.getId())) {
@@ -79,9 +68,6 @@ public class ORASolverByCP extends AbstractORASlover {
 					String key = act.getId() + "_" + qua.getId() + "_" + res.getId();
 					IntVar var = variables.get(key);
 					vars.add(var);
-					//constraint.setCoefficient(var, 1);
-					
-
 				}
 				
 				model.addLinearConstraint(LinearExpr.sum(vars.toArray(new IntVar[0])), needed, needed);
@@ -91,8 +77,6 @@ public class ORASolverByCP extends AbstractORASlover {
 
 		for (Resource res : problem.getResources().values()) {
 			int have = res.getAmount();
-			//MPConstraint constraint = solver.makeConstraint();
-			//constraint.setBounds(0, have);
 			List<IntVar> vars=new ArrayList<IntVar>();
 			for (Activity act : problem.getActivities()) {
 				for (Qualification qua : problem.getQualifications().values()) {
@@ -110,7 +94,6 @@ public class ORASolverByCP extends AbstractORASlover {
 
 		// System.out.println("Number of constraints = " + solver.numConstraints());
 
-		//MPObjective objective = solver.objective();
 		List<IntVar> vars=new ArrayList<IntVar>();
 		List<Integer> costs=new ArrayList<Integer>();
 		int scale=1000000;
@@ -122,7 +105,6 @@ public class ORASolverByCP extends AbstractORASlover {
 					if (var == null) {
 						continue;
 					}
-					//objective.setCoefficient(var, res.getCost());
 					vars.add(var);
 					costs.add( (int) (res.getCost()*scale));
 					
@@ -157,9 +139,8 @@ public class ORASolverByCP extends AbstractORASlover {
 		
 
 		// System.out.println("Solution:");
-		System.out.println("Objective value = " + solver.objectiveValue());
+		//System.out.println("Objective value = " + solver.objectiveValue()/scale);
 	
-		Map<Resource, Integer> count = new HashMap<Resource, Integer>();
 		for (Activity act : problem.getActivities()) {
 			Map<String, Map<String, Integer>> quas = new HashMap<String, Map<String, Integer>>();
 			results.put(act.getId(), quas);
@@ -176,6 +157,9 @@ public class ORASolverByCP extends AbstractORASlover {
 						continue;
 					}
 					long num=cb.value(var);
+					if(num==0) {
+						continue;
+					}
 					ress.put(res.getId(), (int) num);
 					
 					
@@ -187,16 +171,6 @@ public class ORASolverByCP extends AbstractORASlover {
 			}
 
 		}
-		// System.out.println("x = " + x.solutionValue());
-		// System.out.println("y = " + y.solutionValue());
-
-		
-//		  System.out.println("\nAdvanced usage:");
-//		  System.out.println("Problem solved in " + solver.wallTime() +
-//		  " milliseconds"); System.out.println("Problem solved in " +
-//		  solver.iterations() + " iterations"); System.out.println("Problem solved in "
-//		  + solver.nodes() + " branch-and-bound nodes");
-//		 
 
 		return true;
 	}

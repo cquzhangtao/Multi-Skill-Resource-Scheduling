@@ -29,7 +29,7 @@ public class ORASolverByMIP extends AbstractORASlover {
 
 	protected boolean solveWithAllActivities(boolean tracking) {
 		
-		MPSolver solver = new MPSolver("SimpleMipProgram", MPSolver.OptimizationProblemType.CLP_LINEAR_PROGRAMMING);
+		MPSolver solver = new MPSolver("SimpleMipProgram", MPSolver.OptimizationProblemType.GLOP_LINEAR_PROGRAMMING);
 		//solver.setSolverSpecificParametersAsString(arg0)
 		/*if(problem.getActivities().size()>62) {
 			solver.setTimeLimit(1);
@@ -37,7 +37,7 @@ public class ORASolverByMIP extends AbstractORASlover {
 			solver.setTimeLimit(10*1000);
 		}*/
 		// double infinity = java.lang.Double.POSITIVE_INFINITY;
-
+		
 		Map<String, MPVariable> variables = new HashMap<String, MPVariable>();
 		for (Activity act : problem.getActivities()) {
 			for (Qualification qua : problem.getQualifications().values()) {
@@ -129,7 +129,7 @@ public class ORASolverByMIP extends AbstractORASlover {
 		}
 
 		// System.out.println("Solution:");
-		System.out.println("Objective value = " + objective.value());
+		//System.out.println("Objective value = " + objective.value());
 
 		Map<Resource, Integer> count = new HashMap<Resource, Integer>();
 		for (Activity act : problem.getActivities()) {
@@ -148,6 +148,9 @@ public class ORASolverByMIP extends AbstractORASlover {
 						continue;
 					}
 					int num=(int) var.solutionValue();
+					if(num==0) {
+						continue;
+					}
 					ress.put(res.getId(), num);
 					
 					if(Math.abs(num-var.solutionValue())>0.000001) {
@@ -192,7 +195,7 @@ public class ORASolverByMIP extends AbstractORASlover {
 				return false;
 			}
 		}
-		System.out.println("Started Activity num " + problem.getActivities().size());
+		//System.out.println("Started Activity num " + problem.getActivities().size());
 		return true;
 
 	}
