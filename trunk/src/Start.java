@@ -1,13 +1,8 @@
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.util.List;
-
 import javax.swing.JFrame;
 
-import model.Activity;
 import model.Model;
 import solver.AbstractORASlover;
-import solver.ORASolverWithAllActivities;
 import solver.maxactamount.ORASolverByReducingActivities;
 import solver.mincost.pricewithoutprotime.ORASolverByIteratingExchange;
 import solver.or.ORASolverByCP;
@@ -22,10 +17,20 @@ public class Start {
 		problem.print();
 		AbstractORASlover solver;//
 		//solver=new ORASolverWithAllActivities(problem);		
-		//solver=new ORASolverByReducingActivities(problem);
+		
+		solver=new ORASolverByReducingActivities(problem);
+		solver.solve(false,false);
+		solver.print();
+		
 		solver=new ORASolverByIteratingExchange(problem);
-		//solver=new ORASolverByMIP(problem);
-		//solver=new ORASolverByCP(problem);
+		solver.solve(false,false);
+		solver.print();
+		
+		solver=new ORASolverByMIP(problem);
+		solver.solve(false,false);
+		solver.print();
+		
+		solver=new ORASolverByCP(problem);
 		solver.solve(false,false);
 		solver.print();
 

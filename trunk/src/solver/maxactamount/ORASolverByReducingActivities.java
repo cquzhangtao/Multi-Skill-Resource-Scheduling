@@ -35,7 +35,13 @@ public class ORASolverByReducingActivities extends ORASolverWithAllActivities {
 	 */
 	protected boolean solveByReducingActivity() {
 	
+	
 		while (!solveWithAllActivities()) {
+			if(problem.getActivities().size()==16) {
+				int a=0;
+				a=1;
+			}
+			//System.out.println("Activity num "+problem.getActivities().size() );
 			Activity lastAct = problem.getActivities().get(problem.getActivities().size() - 1);
 			problem.getActivities().remove(lastAct);
 			unitedResults.clear();

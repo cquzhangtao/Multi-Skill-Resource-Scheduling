@@ -128,7 +128,7 @@ public class ModelFactory {
 		int resourceNum=50;
 		int resourceAmount=100;
 		int qualificationNum=20;
-		int activityNum=50;
+		int activityNum=100;
 		
 		double rnd1=0.3;
 		double rnd2=0.2;

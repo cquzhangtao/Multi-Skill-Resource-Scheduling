@@ -37,6 +37,24 @@ public class GraphicSpace extends HashMap<String, GraphElement> {
 		
 	}
 	
+	public GraphElement getMostUrgentGraphElement1() {
+		
+		GraphElement maxRQ = null;
+		double max = Double.MIN_VALUE;
+		for (GraphElement rq : this.values()) {
+			if (!rq.isAssignedResource()) {
+				double ratio = rq.getUrgentRatio();
+				if (ratio > max) {
+					max = ratio;
+					maxRQ = rq;
+				}
+			}
+			
+		}
+		return maxRQ;
+		
+	}
+	
 	public void updateRatio() {
 	
 		for (GraphElement rq : this.values()) {

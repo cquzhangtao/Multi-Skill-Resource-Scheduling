@@ -51,6 +51,8 @@ public abstract class AbstractORASlover {
 	 */
 	protected Map<String, Map<String, Map<String, Integer>>> results = new HashMap<String, Map<String, Map<String, Integer>>>();
 	
+	
+	
 	/**
 	 * Constructor. we pass the problem to the solver and initialize the fields:
 	 * totalResNumMap and usedResNumMap. Now the available resource amounts are
@@ -59,8 +61,8 @@ public abstract class AbstractORASlover {
 	 * @param problem
 	 */
 	public AbstractORASlover(Model problem) {
-	
-		this.problem = problem;
+		
+		this.problem = problem.clone();
 		for (Resource res : problem.getResources().values()) {
 			if (res.getDummy()) {
 				continue;
@@ -136,8 +138,9 @@ public abstract class AbstractORASlover {
 	
 		//problem.print();
 		//printTempData();
-		printFinalResults();
+		//printFinalResults();
 		//printTrackResults();
+		printFinal();
 		
 	}
 	
@@ -165,6 +168,29 @@ public abstract class AbstractORASlover {
 		}
 		System.out.println("----------------------------------------------------");
 		System.out.println("Started activities: "+problem.getActivities().size()+", Objective "+cost);
+	}
+	
+	protected void printFinal() {
+		//System.out.println("=========================================");
+		//System.out.println("Results in detail");
+		double cost=0;
+		for (String act : results.keySet()) {
+			//System.out.println("----------------------------------------------------");
+			//System.out.println("Activity:" + act);
+			for (String qua : results.get(act).keySet()) {
+				//System.out.println("        Qualificaiton:" + qua+", "+problem.getActivityMap().get(act).getMode().getQualificationAmountMap().get(qua));
+				for (String res : results.get(act).get(qua).keySet()) {
+					int num=results.get(act).get(qua).get(res);
+					Resource reso = problem.getResources().get(res);
+					cost+=num*reso.getCost();
+					//System.out.println("                        Resource:" + res+"("+reso.getAmount()+"), Amount: "+num);
+					
+				}
+			}
+			
+		}
+		System.out.println("----------------------------------------------------");
+		System.out.println(this.getClass().getSimpleName()+", Started activities: "+problem.getActivities().size()+", Objective "+cost);
 	}
 	
 	/**
@@ -203,20 +229,22 @@ public abstract class AbstractORASlover {
 					}
 					int add=(int) (count.get(res)+num);
 					if(add>res.getAmount()) {
-						System.out.println("Algorithm wrong R");
-						System.exit(0);
+						System.err.println(this.getClass().getSimpleName()+": Algorithm wrong R");
+						//System.exit(0);
 					}
 					count.put(res, add);
 
 				}
 				int need = act.getMode().getQualificationAmountMap().get(qua.getId());
 				if(sum!=need) {
-					System.out.println("Algorithm wrong Q, "+sum+","+need);
-					System.exit(0);
+					System.err.println(this.getClass().getSimpleName()+": Algorithm wrong Q, "+sum+","+need);
+					//System.exit(0);
 				}
 			}
 			
 		}
 	}
+
+	
 	
 }

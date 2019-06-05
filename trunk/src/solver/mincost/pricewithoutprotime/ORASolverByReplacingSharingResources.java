@@ -50,27 +50,30 @@ public class ORASolverByReplacingSharingResources extends ORASolverByExchangingR
 		graphicSpace.reset();
 		for (String quaId : unitedResults.keySet()) {
 			for (GraphElement neighbor : graphicSpace.get(quaId).getSharedResources().keySet()) {
-				List<String> list = graphicSpace.get(quaId).getSharedResources().get(neighbor);
-				int sum = 0;
+				List<String> resourceList = graphicSpace.get(quaId).getSharedResources().get(neighbor);
+				int usedResNumInOverlappingArea = 0;
 				Map<String, Integer> sharingResMap = new HashMap<String, Integer>();
 				for (String resId : unitedResults.get(quaId).keySet()) {
-					if (list.contains(resId)) {
-						sum += unitedResults.get(quaId).get(resId);
+					if (resourceList.contains(resId)) {
+						usedResNumInOverlappingArea += unitedResults.get(quaId).get(resId);
 						sharingResMap.put(resId, unitedResults.get(quaId).get(resId));
 					}
 					
 				}
-				if (sum == 0) {
-					continue;
+				
+				
+				if (usedResNumInOverlappingArea == 0) {
+					continue;// all used resources are not from the overlapping area with the neighbor
 				}
+				
 				Map<String, Integer> unUsedResInCurrentQua = new HashMap<String, Integer>();
-				int sumUnused = 0;
+				int unusedResNum = 0;
 				for (String res : problem.getQualificationResourceRelation().get(quaId)) {
 					unUsedResInCurrentQua.put(res, totalResNumMap.get(res) - usedResNumMap.get(res));
-					sumUnused += totalResNumMap.get(res) - usedResNumMap.get(res);
+					unusedResNum += totalResNumMap.get(res) - usedResNumMap.get(res);
 				}
-				if (sumUnused == 0) {
-					continue;
+				if (unusedResNum == 0) {
+					continue;// all resources with the skill (quaId) are used.
 				}
 				List<String> sortedUnUsedResInCurrentQua = sortResAscending(unUsedResInCurrentQua);
 				Map<String, Integer> usedResInNeighborQua = unitedResults.get(neighbor.getQualification());
@@ -80,15 +83,15 @@ public class ORASolverByReplacingSharingResources extends ORASolverByExchangingR
 					sumUsed += unitedResults.get(neighbor.getQualification()).get(res2);
 				}
 				if (sumUsed == 0) {
-					continue;
+					continue;// The neighbor does not use any resources.
 				}
 				int pickUpNum = 0;
-				if (sum > sumUnused) {
-					pickUpNum = sumUnused;
+				if (usedResNumInOverlappingArea > unusedResNum) {
+					pickUpNum = unusedResNum;
 					
 				}
 				else {
-					pickUpNum = sum;
+					pickUpNum = usedResNumInOverlappingArea;
 				}
 				if (pickUpNum > sumUsed) {
 					pickUpNum = sumUsed;

@@ -64,7 +64,20 @@ public class Model {
 	}
 	
 	public Model() {
-		// TODO Auto-generated constructor stub
+		
+	}
+	
+	public Model clone() {
+		
+		Model model=new Model();
+		
+		model.resources = resources;
+		model.qualifications = qualifications;
+		model.qualificationResourceRelation = qualificationResourceRelation;
+		model.activities = new ArrayList<Activity>(activities);
+		model.activityMap=new HashMap<String,Activity>(activityMap);
+		
+		return model;
 	}
 
 	/**

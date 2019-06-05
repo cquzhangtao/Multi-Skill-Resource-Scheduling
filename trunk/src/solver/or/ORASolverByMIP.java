@@ -29,7 +29,8 @@ public class ORASolverByMIP extends AbstractORASlover {
 
 	protected boolean solveWithAllActivities(boolean tracking) {
 		
-		MPSolver solver = new MPSolver("SimpleMipProgram", MPSolver.OptimizationProblemType.GLOP_LINEAR_PROGRAMMING);
+		MPSolver solver = new MPSolver("SimpleMipProgram", MPSolver.OptimizationProblemType.CBC_MIXED_INTEGER_PROGRAMMING);
+		
 		//solver.setSolverSpecificParametersAsString(arg0)
 		/*if(problem.getActivities().size()>62) {
 			solver.setTimeLimit(1);
@@ -116,7 +117,7 @@ public class ORASolverByMIP extends AbstractORASlover {
 	
 		final MPSolver.ResultStatus resultStatus = solver.solve();
 		// Check that the problem has an optimal solution.
-		if (resultStatus != MPSolver.ResultStatus.FEASIBLE) {
+		if (resultStatus != MPSolver.ResultStatus.OPTIMAL) {
 			// System.err.println("The problem does not have an optimal solution!");
 			return false;
 		}
@@ -183,7 +184,7 @@ public class ORASolverByMIP extends AbstractORASlover {
 
 		while (!solveWithAllActivities(tracking)) {
 
-			System.out.println("Activity number: "+problem.getActivities().size());
+			//System.out.println("Activity number: "+problem.getActivities().size());
 			Activity lastAct = problem.getActivities().get(problem.getActivities().size() - 1);
 			problem.getActivities().remove(lastAct);
 			// unitedResults.clear();

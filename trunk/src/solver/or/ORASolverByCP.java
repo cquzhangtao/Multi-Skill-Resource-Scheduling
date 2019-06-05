@@ -120,7 +120,7 @@ public class ORASolverByCP extends AbstractORASlover {
 			idx++;
 		}
 		
-		model.minimize(LinearExpr.scalProd(vars.toArray(new IntVar[0]),coefficients));
+		//model.minimize(LinearExpr.scalProd(vars.toArray(new IntVar[0]),coefficients));
 
 		//objective.setMinimization();
 		
@@ -129,7 +129,7 @@ public class ORASolverByCP extends AbstractORASlover {
 		        new VarArraySolutionPrinterWithObjective(variables.values().toArray(new IntVar[0]));
 		    solver.solveWithSolutionCallback(model, cb);
 		   // solver.searchAllSolutions(model, cb);
-		   
+		  //  solver.solve(model);
 		   // System.out.println(cb.getSolutionCount() + " solutions found.");
 	
 		if (cb.getSolutionCount() ==0) {
@@ -179,7 +179,7 @@ public class ORASolverByCP extends AbstractORASlover {
 
 		while (!solveWithAllActivities(tracking)) {
 
-			System.out.println("Activity number: "+problem.getActivities().size());
+			//System.out.println("Activity number: "+problem.getActivities().size());
 			Activity lastAct = problem.getActivities().get(problem.getActivities().size() - 1);
 			problem.getActivities().remove(lastAct);
 			// unitedResults.clear();
@@ -191,7 +191,7 @@ public class ORASolverByCP extends AbstractORASlover {
 				return false;
 			}
 		}
-		System.out.println("Started Activity num " + problem.getActivities().size());
+		//System.out.println("Started Activity num " + problem.getActivities().size());
 		return true;
 
 	}
