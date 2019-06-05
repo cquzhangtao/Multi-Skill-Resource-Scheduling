@@ -34,13 +34,13 @@ public class ORASolverByIteratingExchange extends ORASolverByReplacingSharingRes
 	
 		solveByExchangeResource();
 		track();
-		solveByReplaceOverlapping();
+		//solveByReplaceOverlapping();
 		//solveByExchangeResource();
-		/*while (solveByReplaceOverlapping()) {
+		while (solveByReplaceOverlapping()) {
 			track();
 			solveByExchangeResource();
 			track();
-		}*/
+		}
 		//System.out.println("Objective = "+getTotalCost());
 	}
 	

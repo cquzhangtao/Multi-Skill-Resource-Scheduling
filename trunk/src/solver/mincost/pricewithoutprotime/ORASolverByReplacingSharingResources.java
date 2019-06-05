@@ -136,7 +136,9 @@ public class ORASolverByReplacingSharingResources extends ORASolverByExchangingR
 						Integer num = sharingResMap.get(s);
 						currentNum += num;
 						if (currentNum < pickUpNum) {
-							unitedResults.get(quaId).remove(s);
+							//unitedResults.get(quaId).remove(s);
+							unitedResults.get(quaId).put(s, unitedResults.get(quaId).get(s) - num );
+							
 							if (unitedResults.get(neighbor.getQualification()).containsKey(s)) {
 								unitedResults.get(neighbor.getQualification()).put(s, unitedResults.get(neighbor.getQualification()).get(s) + num);
 							}
