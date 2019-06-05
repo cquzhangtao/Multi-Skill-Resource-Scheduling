@@ -120,17 +120,13 @@ public class ORASolverByCP extends AbstractORASlover {
 			idx++;
 		}
 		
-		//model.minimize(LinearExpr.scalProd(vars.toArray(new IntVar[0]),coefficients));
-
-		//objective.setMinimization();
+		model.minimize(LinearExpr.scalProd(vars.toArray(new IntVar[0]),coefficients));
 		
 		 CpSolver solver = new CpSolver();
 		    VarArraySolutionPrinterWithObjective cb =
 		        new VarArraySolutionPrinterWithObjective(variables.values().toArray(new IntVar[0]));
 		    solver.solveWithSolutionCallback(model, cb);
 		   // solver.searchAllSolutions(model, cb);
-		  //  solver.solve(model);
-		   // System.out.println(cb.getSolutionCount() + " solutions found.");
 	
 		if (cb.getSolutionCount() ==0) {
 			// System.err.println("The problem does not have an optimal solution!");

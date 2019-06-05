@@ -78,12 +78,12 @@ public class ORASolverByReplacingSharingResources extends ORASolverByExchangingR
 				List<String> sortedUnUsedResInCurrentQua = sortResAscending(unUsedResInCurrentQua);
 				Map<String, Integer> usedResInNeighborQua = unitedResults.get(neighbor.getQualification());
 				List<String> sortedUsedResInNeighborQua = sortResDescending(usedResInNeighborQua);
-				int sumUsed = 0;
+				int usedResNumInNeighborArea = 0;
 				for (String res2 : sortedUsedResInNeighborQua) {
-					sumUsed += unitedResults.get(neighbor.getQualification()).get(res2);
+					usedResNumInNeighborArea += unitedResults.get(neighbor.getQualification()).get(res2);
 				}
-				if (sumUsed == 0) {
-					continue;// The neighbor does not use any resources.
+				if (usedResNumInNeighborArea == 0) {
+					continue;// The neighbor does not use any resources./the neighbor skill is not needed by activities.
 				}
 				int pickUpNum = 0;
 				if (usedResNumInOverlappingArea > unusedResNum) {
@@ -93,8 +93,8 @@ public class ORASolverByReplacingSharingResources extends ORASolverByExchangingR
 				else {
 					pickUpNum = usedResNumInOverlappingArea;
 				}
-				if (pickUpNum > sumUsed) {
-					pickUpNum = sumUsed;
+				if (pickUpNum > usedResNumInNeighborArea) {
+					pickUpNum = usedResNumInNeighborArea;
 				}
 				while (pickUpNum > 0) {
 					Map<String, Integer> pickUpUnusedResFromCurrentQuaMap = new HashMap<String, Integer>();
@@ -122,11 +122,11 @@ public class ORASolverByReplacingSharingResources extends ORASolverByExchangingR
 						usedResNumMap.put(id, usedResNumMap.get(id) - pickUpUsedResFromNeighborQuaMap.get(id));
 						if (unitedResults.get(neighbor.getQualification()).containsKey(id)) {
 							unitedResults.get(neighbor.getQualification()).put(id,
-									pickUpUsedResFromNeighborQuaMap.get(id) - unitedResults.get(neighbor.getQualification()).get(id));
+									unitedResults.get(neighbor.getQualification()).get(id)-pickUpUsedResFromNeighborQuaMap.get(id) );
 							
 						}
 						else {
-							System.out.println("ERROR");
+							System.err.println("ERROR");
 							
 						}
 						
