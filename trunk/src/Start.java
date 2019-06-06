@@ -1,4 +1,6 @@
 import java.awt.BorderLayout;
+import java.util.List;
+
 import javax.swing.JFrame;
 
 import model.Model;
@@ -10,34 +12,41 @@ import solver.or.ORASolverByMIP;
 import solver.or.ORASolverByMIPGLPK;
 
 public class Start {
-	static {
-		System.loadLibrary("jniortools");
-	}
+
 	public static void main(String[] args) {
-		Model problem = ModelFactory.makeRandomExample();
-		problem.print();
-		AbstractORASlover solver;//
-		//solver=new ORASolverWithAllActivities(problem);		
+		List<Model> problems = ModelFactory.makeRandomExamples();
 		
-		solver=new ORASolverByReducingActivities(problem);
-		solver.solve(false,false);
-		solver.print();
+		for(Model problem:problems) {
+			//problem=ModelFactory.makeRandomExample(100,1.0);
+			AbstractORASlover solver;//
+			//solver=new ORASolverWithAllActivities(problem);		
+			
+			solver=new ORASolverByReducingActivities(problem);
+			solver.solve(false,false);
+			solver.print();
+			
+			solver=new ORASolverByIteratingExchange(problem);
+			solver.solve(false,false);
+			solver.print();
+			
+			/*solver=new ORASolverByMIP(problem);
+			solver.solve(false,false);
+			solver.print();*/
+			
+			solver=new ORASolverByMIPGLPK(problem);
+			solver.solve(false,false);
+			solver.print();
+			
+			if(problem.getActivities().size()<101) {
+				solver=new ORASolverByCP(problem);
+				solver.solve(false,false);
+				solver.print();
+			}
+			
+			System.out.println("----------------------------------------------------");
+		}
 		
-		solver=new ORASolverByIteratingExchange(problem);
-		solver.solve(false,false);
-		solver.print();
 		
-		/*solver=new ORASolverByMIP(problem);
-		solver.solve(false,false);
-		solver.print();*/
-		
-		solver=new ORASolverByMIPGLPK(problem);
-		solver.solve(false,false);
-		solver.print();
-		
-		/*solver=new ORASolverByCP(problem);
-		solver.solve(false,false);
-		solver.print();*/
 
 		
 		/*Model model=ModelFactory.makeFullModel();

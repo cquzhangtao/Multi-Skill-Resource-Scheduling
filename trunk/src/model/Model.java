@@ -41,6 +41,8 @@ public class Model {
 	
 	private Map<String,Activity> activityMap=new HashMap<String,Activity>();
 	
+	private double skillLevel=1;
+	
 	//private Map<String, Set<Integer>> availableResAmount;
 	
 	/**
@@ -415,6 +417,14 @@ public class Model {
 
 	public void setQualificationResourceRelation(Map<String, List<String>> qualificationResourceRelation) {
 		this.qualificationResourceRelation = qualificationResourceRelation;
+	}
+
+	public double getSkillLevel() {
+		return skillLevel;
+	}
+
+	public void setSkillLevel(double skillLevel) {
+		this.skillLevel = skillLevel;
 	}
 	
 	

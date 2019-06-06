@@ -1,9 +1,14 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Resource extends Entity{
 
 	private int amount;
 	private int availableAmount;
+	
+	private List<Qualification> qualifications=new ArrayList<Qualification>();
 	
 	public boolean getDummy() {
 		return false;
@@ -80,6 +85,18 @@ public class Resource extends Entity{
 
 	public void setAmount(int amount) {
 		this.amount = amount;
+	}
+
+
+
+	public List<Qualification> getQualifications() {
+		return qualifications;
+	}
+
+
+
+	public void setQualifications(List<Qualification> qualifications) {
+		this.qualifications = qualifications;
 	}
 
 

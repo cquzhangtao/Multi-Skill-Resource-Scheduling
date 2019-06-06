@@ -17,6 +17,10 @@ import solver.AbstractORASlover;
 
 public class ORASolverByMIP extends AbstractORASlover {
 
+	static {
+		System.loadLibrary("jniortools");
+	}
+	
 	public ORASolverByMIP(Model problem) {
 		super(problem);
 	}

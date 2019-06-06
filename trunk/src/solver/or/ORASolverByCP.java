@@ -23,6 +23,9 @@ import solver.AbstractORASlover;
 
 public class ORASolverByCP extends AbstractORASlover {
 
+	static {
+		System.loadLibrary("jniortools");
+	}
 	public ORASolverByCP(Model problem) {
 		super(problem);
 	}

@@ -30,6 +30,9 @@ public abstract class AbstractORASlover {
 	 */
 	protected Model problem;
 	
+	
+	private Model originalProblem;
+	
 	/**
 	 * The total available resources number before the solver starts. This
 	 * variable will not change during the solving procedures. The Key is the
@@ -61,7 +64,7 @@ public abstract class AbstractORASlover {
 	 * @param problem
 	 */
 	public AbstractORASlover(Model problem) {
-		
+		setOriginalProblem(problem);
 		this.problem = problem.clone();
 		for (Resource res : problem.getResources().values()) {
 			if (res.getDummy()) {
@@ -189,8 +192,10 @@ public abstract class AbstractORASlover {
 			}
 			
 		}
-		System.out.println("----------------------------------------------------");
-		System.out.println(this.getClass().getSimpleName()+", Started activities: "+problem.getActivities().size()+", Objective "+cost);
+		//System.out.println("----------------------------------------------------");
+		//System.out.println(originalProblem.getActivities().size()+","+originalProblem.getSkillLevel()+","+this.getClass().getSimpleName()+", Started activities: "+problem.getActivities().size()+", Objective "+cost);
+		System.out.println(originalProblem.getActivities().size()+","+originalProblem.getSkillLevel()+","+this.getClass().getSimpleName()+", "+problem.getActivities().size()+", "+cost);
+
 	}
 	
 	/**
@@ -243,6 +248,14 @@ public abstract class AbstractORASlover {
 			}
 			
 		}
+	}
+
+	public Model getOriginalProblem() {
+		return originalProblem;
+	}
+
+	public void setOriginalProblem(Model originalProblem) {
+		this.originalProblem = originalProblem;
 	}
 
 	

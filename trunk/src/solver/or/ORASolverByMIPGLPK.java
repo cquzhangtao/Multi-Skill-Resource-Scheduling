@@ -13,6 +13,7 @@ import model.Activity;
 import model.Model;
 import model.Qualification;
 import model.Resource;
+import net.sf.javailp.Constraint;
 import net.sf.javailp.Linear;
 import net.sf.javailp.Operator;
 import net.sf.javailp.OptType;
@@ -39,7 +40,7 @@ public class ORASolverByMIPGLPK extends AbstractORASlover {
 		
 		SolverFactory factory = new SolverFactoryGLPK(); // use lp_solve
 		factory.setParameter(Solver.VERBOSE, 0); 
-		factory.setParameter(Solver.TIMEOUT, 100); // set timeout to 100 seconds
+		factory.setParameter(Solver.TIMEOUT, 10000); // set timeout to 100 seconds
 
 		Problem mathProblem = new Problem();
 
@@ -87,7 +88,7 @@ public class ORASolverByMIPGLPK extends AbstractORASlover {
 
 				}
 				
-				mathProblem.add(linear, Operator.EQ, needed);
+				mathProblem.add(act.getId() + "_" + qua.getId(),linear, Operator.EQ, needed);
 				
 			}
 
@@ -114,8 +115,9 @@ public class ORASolverByMIPGLPK extends AbstractORASlover {
 				}
 			}
 			
-			mathProblem.add(linear, Operator.LE, have);
-			mathProblem.add(linear, Operator.GE, 0);
+			
+			mathProblem.add(res.getId()+"_less",linear, Operator.LE, have);
+			mathProblem.add(res.getId()+"_greater", linear,Operator.GE, 0);
 		}
 
 		// System.out.println("Number of constraints = " + solver.numConstraints());
@@ -143,10 +145,12 @@ public class ORASolverByMIPGLPK extends AbstractORASlover {
 		}
 		
 		mathProblem.setObjective(linear, OptType.MIN);
-		
+		//System.out.println(mathProblem.toString());
 		Solver solver = factory.get(); // you should use this solver only once for one problem
 		Result result = solver.solve(mathProblem);
-		result.get("a");
+		if(result==null) {
+			return false;
+		}
 		
 //		result.
 //
@@ -168,39 +172,39 @@ public class ORASolverByMIPGLPK extends AbstractORASlover {
 //		//System.out.println("Objective value = " + objective.value());
 //
 //		Map<Resource, Integer> count = new HashMap<Resource, Integer>();
-//		for (Activity act : problem.getActivities()) {
-//			Map<String, Map<String, Integer>> quas = new HashMap<String, Map<String, Integer>>();
-//			results.put(act.getId(), quas);
-//			for (Qualification qua : problem.getQualifications().values()) {
-//				if (!act.getMode().getQualificationAmountMap().containsKey(qua.getId())) {
-//					continue;
-//				}
-//				Map<String, Integer> ress = new HashMap<String, Integer>();
-//				quas.put(qua.getId(), ress);
-//				for (Resource res : problem.getResources().values()) {
-//					String key = act.getId() + "_" + qua.getId() + "_" + res.getId();
-//					MPVariable var = variables.get(key);
-//					if (var == null) {
-//						continue;
-//					}
-//					int num=(int) var.solutionValue();
-//					if(num==0) {
-//						continue;
-//					}
-//					ress.put(res.getId(), num);
-//					
-//					if(Math.abs(num-var.solutionValue())>0.000001) {
-//						System.err.println("Algorithm wrong! not integer number");
-//						
-//					}
-//					
-//					// System.out.println(act.getMode().getQualificationAmountMap().get(qua.getId())+",
-//					// "+key+" = " + var.solutionValue()+", "+res.getAmount());
-//
-//				}
-//			}
-//
-//		}
+		for (Activity act : problem.getActivities()) {
+			Map<String, Map<String, Integer>> quas = new HashMap<String, Map<String, Integer>>();
+			results.put(act.getId(), quas);
+			for (Qualification qua : problem.getQualifications().values()) {
+				if (!act.getMode().getQualificationAmountMap().containsKey(qua.getId())) {
+					continue;
+				}
+				Map<String, Integer> ress = new HashMap<String, Integer>();
+				quas.put(qua.getId(), ress);
+				for (Resource res : problem.getResources().values()) {
+					if (!problem.getQualificationResourceRelation().get(qua.getId()).contains(res.getId())) {
+						continue;
+					}
+					String key = act.getId() + "_" + qua.getId() + "_" + res.getId();
+					
+					int num=result.get(key).intValue();
+					if(num==0) {
+						continue;
+					}
+					ress.put(res.getId(), num);
+					
+					if(Math.abs(num-result.get(key).doubleValue())>0.000001) {
+						System.err.println("Algorithm wrong! not integer number");
+						
+					}
+					
+					// System.out.println(act.getMode().getQualificationAmountMap().get(qua.getId())+",
+					// "+key+" = " + var.solutionValue()+", "+res.getAmount());
+
+				}
+			}
+
+		}
 //		// System.out.println("x = " + x.solutionValue());
 //		// System.out.println("y = " + y.solutionValue());
 //
@@ -219,7 +223,7 @@ public class ORASolverByMIPGLPK extends AbstractORASlover {
 
 		while (!solveWithAllActivities(tracking)) {
 
-			System.out.println("Activity number: "+problem.getActivities().size());
+			//System.out.println("Activity number: "+problem.getActivities().size());
 			Activity lastAct = problem.getActivities().get(problem.getActivities().size() - 1);
 			problem.getActivities().remove(lastAct);
 			// unitedResults.clear();
