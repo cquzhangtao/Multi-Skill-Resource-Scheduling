@@ -194,7 +194,7 @@ public abstract class AbstractORASlover {
 		}
 		//System.out.println("----------------------------------------------------");
 		//System.out.println(originalProblem.getActivities().size()+","+originalProblem.getSkillLevel()+","+this.getClass().getSimpleName()+", Started activities: "+problem.getActivities().size()+", Objective "+cost);
-		System.out.println(originalProblem.getActivities().size()+","+originalProblem.getSkillLevel()+","+this.getClass().getSimpleName()+", "+problem.getActivities().size()+", "+cost);
+		System.out.println(originalProblem.getActivities().size()+","+originalProblem.getSkillLevel()+","+problem.getActivities().size()+", "+cost);
 
 	}
 	

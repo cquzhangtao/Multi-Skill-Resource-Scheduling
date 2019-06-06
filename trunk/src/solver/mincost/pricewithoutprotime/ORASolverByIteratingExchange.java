@@ -42,7 +42,7 @@ public class ORASolverByIteratingExchange extends ORASolverByReplacingSharingRes
 			solveByExchangeResource();
 			track();
 			iterate++;
-			if(iterate>100) {
+			if(iterate>10) {
 				break;
 			}
 		}

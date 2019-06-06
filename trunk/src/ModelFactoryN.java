@@ -213,7 +213,7 @@ public class ModelFactoryN {
 			for(Qualification qua:qualifications.values()){
 				if(random.nextDouble()<rnd2){
 					
-					act.addQuaandNum(qua, (int) (1+random.nextInt(qualificationAmount.get(qua)-1)/rnd2/activityNum));
+					act.addQuaandNum(qua, (int) (1+random.nextInt(qualificationAmount.get(qua)-1)/activityNum));
 				}
 			}
 			model.addActivity(act);

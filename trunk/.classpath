@@ -18,6 +18,6 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/MultiskillScheduling/libs/glpk-java-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="libs/javailp-1.2a.jar" sourcepath="libs/javailp-svn-r16-trunk.zip"/>
+	<classpathentry kind="lib" path="libs/javailp-1.2a.jar" sourcepath="libs/javailp-svn-r55-tags-1.2a.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

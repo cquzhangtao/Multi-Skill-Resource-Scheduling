@@ -3,6 +3,12 @@ package solver.or;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.gnu.glpk.GLPK;
+import org.gnu.glpk.GLPKConstants;
+import org.gnu.glpk.glp_iocp;
+import org.gnu.glpk.glp_prob;
+import org.gnu.glpk.glp_smcp;
+
 import com.google.ortools.linearsolver.MPConstraint;
 import com.google.ortools.linearsolver.MPObjective;
 import com.google.ortools.linearsolver.MPSolver;
@@ -22,6 +28,8 @@ import net.sf.javailp.Result;
 import net.sf.javailp.Solver;
 import net.sf.javailp.SolverFactory;
 import net.sf.javailp.SolverFactoryGLPK;
+import net.sf.javailp.SolverGLPK;
+import net.sf.javailp.SolverGLPK.Hook;
 import solver.AbstractORASlover;
 
 public class ORASolverByMIPGLPK extends AbstractORASlover {
@@ -38,7 +46,7 @@ public class ORASolverByMIPGLPK extends AbstractORASlover {
 
 	protected boolean solveWithAllActivities(boolean tracking) {
 		
-		SolverFactory factory = new SolverFactoryGLPK(); // use lp_solve
+		SolverFactory factory = new MySolverFactoryGLPK(); // use lp_solve
 		factory.setParameter(Solver.VERBOSE, 0); 
 		factory.setParameter(Solver.TIMEOUT, 10000); // set timeout to 100 seconds
 
@@ -146,7 +154,9 @@ public class ORASolverByMIPGLPK extends AbstractORASlover {
 		
 		mathProblem.setObjective(linear, OptType.MIN);
 		//System.out.println(mathProblem.toString());
-		Solver solver = factory.get(); // you should use this solver only once for one problem
+		
+		SolverGLPK solver = (SolverGLPK) factory.get(); // you should use this solver only once for one problem
+		
 		Result result = solver.solve(mathProblem);
 		if(result==null) {
 			return false;

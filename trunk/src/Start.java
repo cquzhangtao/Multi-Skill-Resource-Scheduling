@@ -21,9 +21,9 @@ public class Start {
 			AbstractORASlover solver;//
 			//solver=new ORASolverWithAllActivities(problem);		
 			
-			solver=new ORASolverByReducingActivities(problem);
+			/*solver=new ORASolverByReducingActivities(problem);
 			solver.solve(false,false);
-			solver.print();
+			solver.print();*/
 			
 			solver=new ORASolverByIteratingExchange(problem);
 			solver.solve(false,false);
@@ -37,11 +37,11 @@ public class Start {
 			solver.solve(false,false);
 			solver.print();
 			
-			if(problem.getActivities().size()<101) {
-				solver=new ORASolverByCP(problem);
-				solver.solve(false,false);
-				solver.print();
-			}
+			
+//			solver=new ORASolverByCP(problem);
+//			solver.solve(false,false);
+//			solver.print();
+			
 			
 			System.out.println("----------------------------------------------------");
 		}
