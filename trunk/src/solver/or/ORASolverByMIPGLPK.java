@@ -28,6 +28,7 @@ import net.sf.javailp.Result;
 import net.sf.javailp.Solver;
 import net.sf.javailp.SolverFactory;
 import net.sf.javailp.SolverFactoryGLPK;
+import net.sf.javailp.SolverFactoryGurobi;
 import net.sf.javailp.SolverGLPK;
 import net.sf.javailp.SolverGLPK.Hook;
 import solver.AbstractORASlover;
@@ -46,7 +47,8 @@ public class ORASolverByMIPGLPK extends AbstractORASlover {
 
 	protected boolean solveWithAllActivities(boolean tracking) {
 		
-		SolverFactory factory = new MySolverFactoryGLPK(); // use lp_solve
+		//SolverFactory factory = new MySolverFactoryGLPK(); // use lp_solve
+		SolverFactory factory = new MySolverFactoryGurobi(); 
 		factory.setParameter(Solver.VERBOSE, 0); 
 		factory.setParameter(Solver.TIMEOUT, 10000); // set timeout to 100 seconds
 
@@ -155,7 +157,7 @@ public class ORASolverByMIPGLPK extends AbstractORASlover {
 		mathProblem.setObjective(linear, OptType.MIN);
 		//System.out.println(mathProblem.toString());
 		
-		SolverGLPK solver = (SolverGLPK) factory.get(); // you should use this solver only once for one problem
+		Solver solver =  factory.get(); // you should use this solver only once for one problem
 		
 		Result result = solver.solve(mathProblem);
 		if(result==null) {

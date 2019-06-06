@@ -19,5 +19,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="libs/javailp-1.2a.jar" sourcepath="libs/javailp-svn-r55-tags-1.2a.zip"/>
+	<classpathentry kind="lib" path="libs/gurobi-javadoc.jar"/>
+	<classpathentry kind="lib" path="libs/gurobi.jar" sourcepath="libs/gurobi.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
