@@ -7,6 +7,7 @@ import solver.maxactamount.ORASolverByReducingActivities;
 import solver.mincost.pricewithoutprotime.ORASolverByIteratingExchange;
 import solver.or.ORASolverByCP;
 import solver.or.ORASolverByMIP;
+import solver.or.ORASolverByMIPGLPK;
 
 public class Start {
 	static {
@@ -26,13 +27,17 @@ public class Start {
 		solver.solve(false,false);
 		solver.print();
 		
-		solver=new ORASolverByMIP(problem);
+		/*solver=new ORASolverByMIP(problem);
+		solver.solve(false,false);
+		solver.print();*/
+		
+		solver=new ORASolverByMIPGLPK(problem);
 		solver.solve(false,false);
 		solver.print();
 		
-		solver=new ORASolverByCP(problem);
+		/*solver=new ORASolverByCP(problem);
 		solver.solve(false,false);
-		solver.print();
+		solver.print();*/
 
 		
 		/*Model model=ModelFactory.makeFullModel();

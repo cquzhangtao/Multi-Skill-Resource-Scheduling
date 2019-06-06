@@ -5,6 +5,19 @@
 	<classpathentry kind="lib" path="libs/jfreechart-1.0.19.jar"/>
 	<classpathentry kind="lib" path="libs/com.google.ortools.jar"/>
 	<classpathentry kind="lib" path="libs/protobuf.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-10"/>
+	<classpathentry kind="lib" path="libs/javailp-1.2a.jar"/>
+	<classpathentry kind="lib" path="libs/minisatjni1.jar"/>
+	<classpathentry kind="lib" path="libs/glpk-java-javadoc.jar"/>
+	<classpathentry kind="lib" path="libs/glpk-java-sources.jar"/>
+	<classpathentry kind="lib" path="libs/glpk_4_65_java.jar" sourcepath="libs/glpk-java-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/MultiskillScheduling/libs/glpk-java-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-10">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

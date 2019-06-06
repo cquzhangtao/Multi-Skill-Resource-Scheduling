@@ -184,7 +184,7 @@ public class ORASolverByMIP extends AbstractORASlover {
 
 		while (!solveWithAllActivities(tracking)) {
 
-			//System.out.println("Activity number: "+problem.getActivities().size());
+			System.out.println("Activity number: "+problem.getActivities().size());
 			Activity lastAct = problem.getActivities().get(problem.getActivities().size() - 1);
 			problem.getActivities().remove(lastAct);
 			// unitedResults.clear();
