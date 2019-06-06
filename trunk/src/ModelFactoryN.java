@@ -14,7 +14,7 @@ import model.Qualification;
 import model.Resource;
 
 
-public class ModelFactory {
+public class ModelFactoryN {
 
 	public static Model makeExample() {
 		Model model=new Model();
@@ -108,9 +108,27 @@ public class ModelFactory {
 
 	}
 	
+	public static List<Model> makeRandomExamples()
+	{
+		int[] activityNum=new int[] {10,20,50,100,150,200,300,400};
+		double[] skillMasterLevel=new double[] {0,0.25,0.5,0.75,1};
+		
+		
+		List<Model> models=new ArrayList<Model>();
+		
+		for(int actNum:activityNum) {
+			for(double skillLevel:skillMasterLevel) {
+				models.add(makeRandomExample(actNum,skillLevel));
+				
+			}
+		}
+		return models;
+		
+	}
 	
-	public static Model makeRandomExample() {
+	public static Model makeRandomExample(int actNumber,double skillLevel ) {
 		Model model=new Model();
+		model.setSkillLevel(skillLevel);
 		//Map<String, Resource>  resList=new HashMap<String, Resource> ();
 		//model.setResources(resList);
 		Map<String, Qualification> qualifications=new HashMap<String, Qualification> ();
@@ -128,9 +146,9 @@ public class ModelFactory {
 		int resourceNum=50;
 		int resourceAmount=100;
 		int qualificationNum=20;
-		int activityNum=100;
+		int activityNum=actNumber;
 		
-		double rnd1=0.3;
+		double rnd1=skillLevel;
 		double rnd2=0.2;
 		
 		Random random=new Random(100);
@@ -140,7 +158,7 @@ public class ModelFactory {
 			Resource res = new Resource();
 			res.setResId("res"+i);
 			res.setTotalAmount(1+random.nextInt(resourceAmount-1));
-			res.setCost(0.1+random.nextDouble());
+			res.setCost(0.1+random.nextInt(100));
 			model.addResource(res);
 		}
 		
@@ -157,6 +175,7 @@ public class ModelFactory {
 				if(random.nextDouble()<rnd1){
 					list.add(res.getId());
 					sum+=res.getAvailableAmount();
+					res.getQualifications().add(qua);
 				}
 			}
 			
@@ -165,7 +184,25 @@ public class ModelFactory {
 		}
 	
 	
-	
+		Qualification[] quas = model.getQualifications().values().toArray(new Qualification[0] );
+		for(Resource res:model.getResources().values()) {
+			if(res.getQualifications().isEmpty()) {
+				Qualification qua = quas[random.nextInt(quas.length)];
+				res.getQualifications().add(qua);
+				quaResRelationMap.get(qua.getId()).add(res.getId());
+				qualificationAmount.put(qua, qualificationAmount.get(qua)+res.getAmount());
+			}
+		}
+		
+		Resource[] resources = model.getResources().values().toArray(new Resource[0] );
+		for(Qualification qua:quas) {
+			if(quaResRelationMap.get(qua.getId()).isEmpty()) {
+				Resource res = resources[random.nextInt(resources.length)];
+				quaResRelationMap.get(qua.getId()).add(res.getId());
+				res.getQualifications().add(qua);
+				qualificationAmount.put(qua, qualificationAmount.get(qua)+res.getAmount());
+			}
+		}
 		
 
 		// act
@@ -185,15 +222,7 @@ public class ModelFactory {
 
 		
 		
-		
-		/*for(Resource res:resList.values()) {
-			
-			Set<Integer> amount=new HashSet<Integer>();
-			for(int i=1;i<=res.getAvailableAmount();i++) {
-				amount.add(i);
-			}
-			availableRes.put(res.getId(), amount);
-		}*/
+
 		
 		return model;
 

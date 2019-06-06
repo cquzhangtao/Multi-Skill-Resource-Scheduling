@@ -14,7 +14,7 @@ import solver.or.ORASolverByMIPGLPK;
 public class Start {
 
 	public static void main(String[] args) {
-		List<Model> problems = ModelFactory.makeRandomExamples();
+		List<Model> problems = ModelFactoryN.makeRandomExamples();
 		
 		for(Model problem:problems) {
 			//problem=ModelFactory.makeRandomExample(100,1.0);
