@@ -247,7 +247,7 @@ public class MySolverGLPK extends SolverGLPK{
 			}
 			int status = GLPK.glp_get_status(lp);
 
-			if (status != GLPKConstants.GLP_OPT&&status == GLPKConstants.GLP_FEAS) {
+			if (status != GLPKConstants.GLP_OPT&&status != GLPKConstants.GLP_FEAS) {
 				return null;
 			}
 			ret=GLPK.glp_intopt(lp, integerParameters);

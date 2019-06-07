@@ -17,7 +17,7 @@ public class Start {
 		List<Model> problems = ModelFactoryN.makeRandomExamples();
 		
 		for(Model problem:problems) {
-			//problem=ModelFactory.makeRandomExample(100,1.0);
+			problem=ModelFactoryN.makeRandomExample(10000,0.4);
 			AbstractORASlover solver;//
 			//solver=new ORASolverWithAllActivities(problem);		
 			
@@ -25,7 +25,9 @@ public class Start {
 			solver.solve(false,false);
 			solver.print();*/
 			
-			
+			solver=new ORASolverByIteratingExchange(problem);
+			solver.solve(false,false);
+			solver.print();			
 			
 			/*solver=new ORASolverByMIP(problem);
 			solver.solve(false,false);
@@ -35,9 +37,7 @@ public class Start {
 			solver.solve(false,false);
 			solver.print();
 			
-			solver=new ORASolverByIteratingExchange(problem);
-			solver.solve(false,false);
-			solver.print();
+
 			
 			
 //			solver=new ORASolverByCP(problem);
