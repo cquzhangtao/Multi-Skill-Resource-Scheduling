@@ -12,6 +12,7 @@ import com.google.ortools.linearsolver.MPSolverParameters;
 import com.google.ortools.linearsolver.MPVariable;
 import com.google.ortools.sat.CpModel;
 import com.google.ortools.sat.CpSolver;
+import com.google.ortools.sat.CpSolverStatus;
 import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.LinearExpr;
 
@@ -26,8 +27,12 @@ public class ORASolverByCP extends AbstractORASlover {
 	static {
 		System.loadLibrary("jniortools");
 	}
+	
+	
+	
 	public ORASolverByCP(Model problem) {
 		super(problem);
+		setNoObjective(false);
 	}
 
 	@Override
@@ -123,20 +128,29 @@ public class ORASolverByCP extends AbstractORASlover {
 			idx++;
 		}
 		
-	//	model.minimize(LinearExpr.scalProd(vars.toArray(new IntVar[0]),coefficients));
-		
+		if(!isNoObjective()) {
+			model.minimize(LinearExpr.scalProd(vars.toArray(new IntVar[0]),coefficients));
+		}
 		 CpSolver solver = new CpSolver();
-		 solver.getParameters().setMaxTimeInSeconds(20.0);
+		 solver.getParameters().setMaxTimeInSeconds(10);
 		    VarArraySolutionPrinterWithObjective cb =
-		        new VarArraySolutionPrinterWithObjective(variables.values().toArray(new IntVar[0]),1);
-		   // solver.solveWithSolutionCallback(model, cb);
-		   solver.searchAllSolutions(model, cb);
+		        new VarArraySolutionPrinterWithObjective(variables.values().toArray(new IntVar[0]),isNoObjective()?1:100000);
+		   CpSolverStatus status;
+		    if(!isNoObjective()) {
+		    	status=solver.searchAllSolutions(model, cb);
+		    }else {
+		    	status=solver.solveWithSolutionCallback(model, cb);
+		    }
 	
+		
+		   
 		if (cb.getSolutionCount() ==0) {
 			// System.err.println("The problem does not have an optimal solution!");
 			return false;
 		}
-		
+		  if(!isNoObjective()&&status==CpSolverStatus.OPTIMAL) {
+			  setOptimal(true);
+		  }
 
 		// System.out.println("Solution:");
 		//System.out.println("Objective value = " + solver.objectiveValue()/scale);

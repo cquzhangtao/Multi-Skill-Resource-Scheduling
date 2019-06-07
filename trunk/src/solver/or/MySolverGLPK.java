@@ -206,7 +206,7 @@ public class MySolverGLPK extends SolverGLPK{
 			GLPK.glp_init_iptcp(interiorParameters);
 
 			if (timeout != null) {
-				int v = ((Number) timeout).intValue() * 1000;
+				int v = ((Number) timeout).intValue() *1000;
 
 				integerParameters.setTm_lim(v);
 				simplexParameters.setTm_lim(v);
@@ -261,11 +261,18 @@ public class MySolverGLPK extends SolverGLPK{
 					|| status == GLPKConstants.GLP_FEAS) {
 
 				Result result;
+				
+				
 				if (problem.getObjective() != null) {
-					result = new ResultImpl(problem.getObjective());
+					if(status == GLPKConstants.GLP_OPT) {
+						result = new ResultImpl(problem.getObjective());
+					}else {
+						result = new ResultImpl(-999999);
+					}
 				} else {
 					result = new ResultImpl();
 				}
+				
 				
 				// post-solve: LP relaxation with fixed integers
 				Object postsolve = parameters.get(Solver.POSTSOLVE);

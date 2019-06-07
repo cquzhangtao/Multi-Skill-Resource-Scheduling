@@ -8,8 +8,10 @@ import solver.AbstractORASlover;
 import solver.maxactamount.ORASolverByReducingActivities;
 import solver.mincost.pricewithoutprotime.ORASolverByIteratingExchange;
 import solver.or.ORASolverByCP;
+import solver.or.ORASolverByCPNonObjective;
 import solver.or.ORASolverByMIP;
 import solver.or.ORASolverByMIPGLPK;
+import solver.or.ORASolverByMIPNonObjective;
 
 public class Start {
 
@@ -17,29 +19,35 @@ public class Start {
 		List<Model> problems = ModelFactoryN.makeRandomExamples();
 		
 		for(Model problem:problems) {
-			//problem=ModelFactoryN.makeRandomExample(10000,0.4);
+			//problem=ModelFactoryN.makeRandomExample(100,0.4);
 			AbstractORASlover solver;//
-			//solver=new ORASolverWithAllActivities(problem);		
+			
+		
+			
 			
 			solver=new ORASolverByReducingActivities(problem);
 			solver.solve(false,false);
 			solver.print();
 			
-			solver=new ORASolverByCP(problem);
+			solver=new ORASolverByMIPNonObjective(problem);
 			solver.solve(false,false);
 			solver.print();
+			
+			/*solver=new ORASolverByCPNonObjective(problem);
+			solver.solve(false,false);
+			solver.print();*/
 			
 			solver=new ORASolverByIteratingExchange(problem);
 			solver.solve(false,false);
 			solver.print();			
-			
-			/*solver=new ORASolverByMIP(problem);
-			solver.solve(false,false);
-			solver.print();*/
-			
+						
 			solver=new ORASolverByMIPGLPK(problem);
 			solver.solve(false,false);
 			solver.print();
+			
+			/*solver=new ORASolverByCP(problem);
+			solver.solve(false,false);
+			solver.print();*/
 			
 
 			

@@ -54,7 +54,19 @@ public abstract class AbstractORASlover {
 	 */
 	protected Map<String, Map<String, Map<String, Integer>>> results = new HashMap<String, Map<String, Map<String, Integer>>>();
 	
+	private boolean optimal=false;
 	
+	private boolean noObjective=true;
+	
+	private long time=0;
+	
+	public boolean isNoObjective() {
+		return noObjective;
+	}
+
+	public void setNoObjective(boolean noObjective) {
+		this.noObjective = noObjective;
+	} 
 	
 	/**
 	 * Constructor. we pass the problem to the solver and initialize the fields:
@@ -117,6 +129,7 @@ public abstract class AbstractORASlover {
 	 */
 	public void solve(boolean print, boolean tracking) {
 	
+		long start=System.currentTimeMillis();
 		if (start(tracking)) {
 			generateResults();
 			validateResults();
@@ -127,6 +140,7 @@ public abstract class AbstractORASlover {
 		else {
 			System.out.println("No feasible solution found");
 		}
+		time=System.currentTimeMillis()-start;
 	}
 	
 	protected abstract void printTrackResults();
@@ -194,7 +208,7 @@ public abstract class AbstractORASlover {
 		}
 		//System.out.println("----------------------------------------------------");
 		//System.out.println(originalProblem.getActivities().size()+","+originalProblem.getSkillLevel()+","+this.getClass().getSimpleName()+", Started activities: "+problem.getActivities().size()+", Objective "+cost);
-		System.out.println(originalProblem.getActivities().size()+","+originalProblem.getSkillLevel()+","+problem.getActivities().size()+", "+cost);
+		System.out.println(originalProblem.getActivities().size()+","+originalProblem.getSkillLevel()+","+problem.getActivities().size()+", "+cost+ (noObjective?"":(", "+ optimal))+", "+time);
 
 	}
 	
@@ -256,6 +270,14 @@ public abstract class AbstractORASlover {
 
 	public void setOriginalProblem(Model originalProblem) {
 		this.originalProblem = originalProblem;
+	}
+
+	public boolean isOptimal() {
+		return optimal;
+	}
+
+	public void setOptimal(boolean optimal) {
+		this.optimal = optimal;
 	}
 
 	

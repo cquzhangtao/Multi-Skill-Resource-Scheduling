@@ -37,6 +37,7 @@ public class ORASolverByMIPGLPK extends AbstractORASlover {
 
 	public ORASolverByMIPGLPK(Model problem) {
 		super(problem);
+		setNoObjective(false);
 	}
 
 	@Override
@@ -50,7 +51,7 @@ public class ORASolverByMIPGLPK extends AbstractORASlover {
 		SolverFactory factory = new MySolverFactoryGLPK(); // use lp_solve
 		//SolverFactory factory = new MySolverFactoryGurobi(); 
 		factory.setParameter(Solver.VERBOSE, 0); 
-		factory.setParameter(Solver.TIMEOUT, 10000); // set timeout to 100 seconds
+		factory.setParameter(Solver.TIMEOUT, 10); // set timeout to 100 seconds
 
 		Problem mathProblem = new Problem();
 
@@ -129,10 +130,6 @@ public class ORASolverByMIPGLPK extends AbstractORASlover {
 			mathProblem.add(res.getId()+"_less",linear, Operator.LE, have);
 			mathProblem.add(res.getId()+"_greater", linear,Operator.GE, 0);
 		}
-
-		// System.out.println("Number of constraints = " + solver.numConstraints());
-
-		//MPObjective objective = solver.objective();
 		
 		
 		Linear linear=new Linear();
@@ -154,8 +151,9 @@ public class ORASolverByMIPGLPK extends AbstractORASlover {
 
 		}
 		
-		mathProblem.setObjective(linear, OptType.MIN);
-		//System.out.println(mathProblem.toString());
+		if(!isNoObjective()) {
+			mathProblem.setObjective(linear, OptType.MIN);
+		}
 		
 		Solver solver =  factory.get(); // you should use this solver only once for one problem
 		
@@ -164,26 +162,10 @@ public class ORASolverByMIPGLPK extends AbstractORASlover {
 			return false;
 		}
 		
-//		result.
-//
-//		final MPSolver.ResultStatus resultStatus = solver.solve();
-//		// Check that the problem has an optimal solution.
-//		if (resultStatus != MPSolver.ResultStatus.OPTIMAL) {
-//			// System.err.println("The problem does not have an optimal solution!");
-//			return false;
-//		}
-//		// Verify that the solution satisfies all constraints (when using solvers
-//		// others than GLOP_LINEAR_PROGRAMMING, this is highly recommended!).
-//		if (!solver.verifySolution(/* tolerance= */1e-7, /* log_errors= */true)) {
-//			System.err.println(
-//					"The solution returned by the solver violated the" + " problem constraints by at least 1e-7");
-//			return false;
-//		}
-//
-//		// System.out.println("Solution:");
-//		//System.out.println("Objective value = " + objective.value());
-//
-//		Map<Resource, Integer> count = new HashMap<Resource, Integer>();
+		if(!isNoObjective()&&result.getObjective().doubleValue()>0) {
+			setOptimal(true);
+		}
+		
 		for (Activity act : problem.getActivities()) {
 			Map<String, Map<String, Integer>> quas = new HashMap<String, Map<String, Integer>>();
 			results.put(act.getId(), quas);
