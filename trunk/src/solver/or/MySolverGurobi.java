@@ -24,17 +24,31 @@ import net.sf.javailp.VarType;
 
 public class MySolverGurobi extends SolverGurobi{
 	
+	private static GRBEnv env = null;//new GRBEnv("gurobi.log");
+	
 	public MySolverGurobi() {
-		
+		try {
+			if(env==null) {
+			env = new GRBEnv("gurobi.log");
+			}
+		} catch (GRBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	public Result solve(Problem problem) {
-
+		try {
+			env.start();
+		} catch (GRBException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		Map<Object, GRBVar> objToVar = new HashMap<Object, GRBVar>();
 		Map<GRBVar, Object> varToObj = new HashMap<GRBVar, Object>();
 		// Map<String, GRBVar> nameToVar = new HashMap<String, GRBVar>(nvar);
 
 		try {
-			GRBEnv env = new GRBEnv("gurobi.log");
+			//GRBEnv env = new GRBEnv("gurobi.log");
 			//env.set(IntParam.LogToConsole,0);
 			
 			initWithParameters(env);
@@ -148,6 +162,13 @@ public class MySolverGurobi extends SolverGurobi{
 		} catch (GRBException e) {
 			e.printStackTrace();
 			return null;
+		}finally {
+			try {
+				env.dispose();
+			} catch (GRBException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 	}
