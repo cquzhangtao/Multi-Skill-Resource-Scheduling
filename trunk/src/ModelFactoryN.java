@@ -143,7 +143,7 @@ public class ModelFactoryN {
 		//model.setActivities(actList);
 		
 	
-		int resourceNum=50;
+		int resourceNum=(int) (50+Math.abs(0.5-skillLevel)*10);
 		int resourceAmount=100;
 		int qualificationNum=20;
 		int activityNum=actNumber;
