@@ -35,6 +35,7 @@ public class MySolverGurobi extends SolverGurobi{
 
 		try {
 			GRBEnv env = new GRBEnv("gurobi.log");
+			//env.set(IntParam.LogToConsole,0);
 			
 			initWithParameters(env);
 			

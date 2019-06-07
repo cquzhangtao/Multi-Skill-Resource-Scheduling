@@ -25,15 +25,17 @@ public class Start {
 			solver.solve(false,false);
 			solver.print();*/
 			
-			solver=new ORASolverByIteratingExchange(problem);
-			solver.solve(false,false);
-			solver.print();
+			
 			
 			/*solver=new ORASolverByMIP(problem);
 			solver.solve(false,false);
 			solver.print();*/
 			
 			solver=new ORASolverByMIPGLPK(problem);
+			solver.solve(false,false);
+			solver.print();
+			
+			solver=new ORASolverByIteratingExchange(problem);
 			solver.solve(false,false);
 			solver.print();
 			
