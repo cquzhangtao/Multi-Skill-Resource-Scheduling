@@ -32,7 +32,7 @@ public class ConstraintProgramming {
     // Create a solver and solve the model.
     CpSolver solver = new CpSolver();
     VarArraySolutionPrinterWithObjective cb =
-        new VarArraySolutionPrinterWithObjective(new IntVar[] {x, y, z});
+        new VarArraySolutionPrinterWithObjective(new IntVar[] {x, y, z},1);
     //solver.solveWithSolutionCallback(model, cb);
     solver.searchAllSolutions(model, cb);
    
@@ -46,9 +46,11 @@ class VarArraySolutionPrinterWithObjective extends CpSolverSolutionCallback {
 	
     private int solutionCount;
     private final IntVar[] variableArray;
+    private final int solutionLimit;
     
-    public VarArraySolutionPrinterWithObjective(IntVar[] variables) {
+    public VarArraySolutionPrinterWithObjective(IntVar[] variables,int limit) {
       variableArray = variables;
+      solutionLimit=limit;
     }
 
     @Override
@@ -59,6 +61,10 @@ class VarArraySolutionPrinterWithObjective extends CpSolverSolutionCallback {
         System.out.printf("  %s = %d%n", v.getName(), value(v));
       }*/
       solutionCount++;
+      if (solutionCount >= solutionLimit) {
+          //System.out.printf("Stop search after %d solutions%n", solutionLimit);
+          stopSearch();
+        }
     }
     
 //    public long value(IntVar v) {

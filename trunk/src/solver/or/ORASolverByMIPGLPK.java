@@ -49,7 +49,7 @@ public class ORASolverByMIPGLPK extends AbstractORASlover {
 		
 		SolverFactory factory = new MySolverFactoryGLPK(); // use lp_solve
 		//SolverFactory factory = new MySolverFactoryGurobi(); 
-		factory.setParameter(Solver.VERBOSE, 6); 
+		factory.setParameter(Solver.VERBOSE, 0); 
 		factory.setParameter(Solver.TIMEOUT, 10000); // set timeout to 100 seconds
 
 		Problem mathProblem = new Problem();

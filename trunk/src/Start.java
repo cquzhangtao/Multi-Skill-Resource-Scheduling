@@ -17,13 +17,17 @@ public class Start {
 		List<Model> problems = ModelFactoryN.makeRandomExamples();
 		
 		for(Model problem:problems) {
-			problem=ModelFactoryN.makeRandomExample(10000,0.4);
+			//problem=ModelFactoryN.makeRandomExample(10000,0.4);
 			AbstractORASlover solver;//
 			//solver=new ORASolverWithAllActivities(problem);		
 			
-			/*solver=new ORASolverByReducingActivities(problem);
+			solver=new ORASolverByReducingActivities(problem);
 			solver.solve(false,false);
-			solver.print();*/
+			solver.print();
+			
+			solver=new ORASolverByCP(problem);
+			solver.solve(false,false);
+			solver.print();
 			
 			solver=new ORASolverByIteratingExchange(problem);
 			solver.solve(false,false);
@@ -40,9 +44,7 @@ public class Start {
 
 			
 			
-//			solver=new ORASolverByCP(problem);
-//			solver.solve(false,false);
-//			solver.print();
+
 			
 			
 			System.out.println("----------------------------------------------------");
