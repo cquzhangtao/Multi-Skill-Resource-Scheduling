@@ -81,6 +81,10 @@ public class Model {
 		
 		return model;
 	}
+	
+	public void addQualification(Qualification qua) {
+		qualifications.put(qua.getId(),qua);
+	}
 
 	/**
 	 * Please keep this function in case we need to debug

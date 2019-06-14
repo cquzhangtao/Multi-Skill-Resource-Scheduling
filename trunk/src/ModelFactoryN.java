@@ -15,6 +15,59 @@ import model.Resource;
 
 
 public class ModelFactoryN {
+	
+	
+	public static void A() {
+		int resNum=50;
+		int actNum=100;
+		int skillNum=20;
+		
+		double rsf=0.5;
+		double asf=0.2;
+		
+		Random rnd=new Random(0);
+		Model model=new Model();
+		
+		for(int i=0;i<skillNum;i++) {
+			Qualification qua=new Qualification("Skill"+i);
+			model.addQualification(qua);
+		}
+		
+		for(int i=0;i<resNum;i++) {
+			Resource res=new Resource();
+			model.addResource(res);
+			
+			//getRandomSubList(model.getQualifications().values(),rsf*skillNum)
+			
+			for(Qualification qua:model.getQualifications().values()) {
+				if(rnd.nextDouble()<rsf) {
+					res.getQualifications().add(qua);
+				}
+			}
+			
+			if(res.getQualifications().isEmpty()) {
+				//res.getQualifications().add(qua);
+			}
+			
+		}
+		
+		
+		
+	}
+	
+	public static <T> List<T> getRandomSubList(Collection<T> input, int subsetSize)
+	{
+	    Random r = new Random();
+	    int inputSize = input.size();
+	    for (int i = 0; i < subsetSize; i++)
+	    {
+	        int indexToSwap = i + r.nextInt(inputSize - i);
+	        T temp = input.get(i);
+	        input.set(i, input.get(indexToSwap));
+	        input.set(indexToSwap, temp);
+	    }
+	    return input.subList(0, subsetSize);
+	}
 
 	public static Model makeExample() {
 		Model model=new Model();
