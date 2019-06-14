@@ -1,7 +1,11 @@
 import java.awt.BorderLayout;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTable;
 
 import model.Model;
 import solver.AbstractORASlover;
@@ -17,49 +21,63 @@ public class Start {
 
 	public static void main(String[] args) {
 		List<Model> problems = ModelFactoryN.makeRandomExamples();
+		DecimalFormat df=new DecimalFormat("#.##");
+		df.setRoundingMode(RoundingMode.UP);
 		
 		for(Model problem:problems) {
 			//problem=ModelFactoryN.makeRandomExample(100,0.4);
 			AbstractORASlover solver;//
+			int actNum = problem.getActivities().size();
+			double skillLevel = problem.getSkillLevel();
 			
-		
-			
-			
-			solver=new ORASolverByReducingActivities(problem);
-			solver.solve(false,false);
-			solver.print();
-			
-			solver=new ORASolverByMIPNonObjective(problem);
-			solver.solve(false,false);
-			solver.print();
-			
+//			solver=new ORASolverByReducingActivities(problem);
+//			solver.solve(false,false);
+//			solver.print();
+//			
+//			solver=new ORASolverByMIPNonObjective(problem);
+//			solver.solve(false,false);
+//			solver.print();
+//			
 			/*solver=new ORASolverByCPNonObjective(problem);
 			solver.solve(false,false);
 			solver.print();*/
 			
 			solver=new ORASolverByIteratingExchange(problem);
 			solver.solve(false,false);
-			solver.print();			
-						
+			//solver.print();			
+					int exeAct1 = solver.getExecutedActivityNumber();
+					double cost1=solver.getCost();
+					double runTime1=solver.getTime();
 			solver=new ORASolverByMIPGLPK(problem);
 			solver.solve(false,false);
-			solver.print();
+			//solver.print();
+			int exeAct2 = solver.getExecutedActivityNumber();
+			double cost2=solver.getCost();
+			double runTime2=solver.getTime();
 			
-			/*solver=new ORASolverByCP(problem);
-			solver.solve(false,false);
-			solver.print();*/
+			solver=new ORASolverByCP(problem);
 			
-
+			  solver.solve(false,false); //solver.print();
+			  
+			  int exeAct3 = solver.getExecutedActivityNumber(); double
+			  cost3=solver.getCost(); double runTime3=solver.getTime();
+			 
 			
 			
-
+			  System.out.println(actNum+"\t"+skillLevel+"\t"+exeAct1+"\t"+df.format(cost1)+
+			  "\t"+runTime1+"\t"+exeAct2+"\t"+df.format(cost2)+"\t"+
+			  runTime2+"\t"+exeAct3+"\t"+df.format(cost3)+"\t"+runTime3);
+			 
 			
-			
-			System.out.println("----------------------------------------------------");
+			/*
+			 * System.out.println(actNum+"\t"+skillLevel+"\t"+exeAct1+"\t"+df.format(cost1)+
+			 * "\t"+runTime1+"\t"+exeAct2+"\t"+df.format(cost2)+"\t"+ runTime2);
+			 */
+			//System.out.println("----------------------------------------------------");
 		}
 		
 		
-
+		
 		
 		/*Model model=ModelFactory.makeFullModel();
 		model.print();

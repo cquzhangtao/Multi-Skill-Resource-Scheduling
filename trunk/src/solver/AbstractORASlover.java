@@ -1,8 +1,11 @@
 
 package solver;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.swing.JTable;
 
 import com.google.ortools.linearsolver.MPVariable;
 
@@ -143,6 +146,21 @@ public abstract class AbstractORASlover {
 		time=System.currentTimeMillis()-start;
 	}
 	
+	public double solveTime(boolean print, boolean tracking) {
+		
+		long start=System.currentTimeMillis();
+		if (start(tracking)) {
+			generateResults();
+			validateResults();
+			if (print) {
+				print();
+			}
+		}
+		else {
+			System.out.println("No feasible solution found");
+		}
+		return time=System.currentTimeMillis()-start;
+	}
 	protected abstract void printTrackResults();
 	
 	protected abstract void printTempData();
@@ -190,6 +208,18 @@ public abstract class AbstractORASlover {
 	protected void printFinal() {
 		//System.out.println("=========================================");
 		//System.out.println("Results in detail");
+		
+		//System.out.println("----------------------------------------------------");
+		//System.out.println(originalProblem.getActivities().size()+","+originalProblem.getSkillLevel()+","+this.getClass().getSimpleName()+", Started activities: "+problem.getActivities().size()+", Objective "+cost);
+		System.out.println(originalProblem.getActivities().size()+","+originalProblem.getSkillLevel()+","+problem.getActivities().size()+", "+getCost()+ (noObjective?"":(", "+ optimal))+", "+time);
+
+		
+	}
+	public int getExecutedActivityNumber() {
+		return problem.getActivities().size();
+		
+	}
+	public double getCost() {
 		double cost=0;
 		for (String act : results.keySet()) {
 			//System.out.println("----------------------------------------------------");
@@ -206,12 +236,12 @@ public abstract class AbstractORASlover {
 			}
 			
 		}
-		//System.out.println("----------------------------------------------------");
-		//System.out.println(originalProblem.getActivities().size()+","+originalProblem.getSkillLevel()+","+this.getClass().getSimpleName()+", Started activities: "+problem.getActivities().size()+", Objective "+cost);
-		System.out.println(originalProblem.getActivities().size()+","+originalProblem.getSkillLevel()+","+problem.getActivities().size()+", "+cost+ (noObjective?"":(", "+ optimal))+", "+time);
-
+		return cost;
 	}
-	
+	public double getTime() {
+		
+		return time;
+	}
 	/**
 	 * Please use this function to obtain the final results and go on further
 	 * works.
