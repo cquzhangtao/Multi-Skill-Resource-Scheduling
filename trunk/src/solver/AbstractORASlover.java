@@ -240,7 +240,7 @@ public abstract class AbstractORASlover {
 	}
 	public double getTime() {
 		
-		return time;
+		return time/1000.0;
 	}
 	/**
 	 * Please use this function to obtain the final results and go on further
