@@ -24,14 +24,14 @@ public class Model {
 	/**
 	 * Qualification map
 	 */
-	private Map<String, Qualification> qualifications;
+	private Map<String, Qualification> qualifications=new HashMap<String,Qualification>();;
 	
 
 	
 	/**
 	 * The relation between resources and qualification
 	 */
-	private Map<String, List<String>> qualificationResourceRelation;
+	private Map<String, List<String>> qualificationResourceRelation=new HashMap<String, List<String>>();
 	
 	/**
 	 * The activity list we need to allocate resources to. The resources are in

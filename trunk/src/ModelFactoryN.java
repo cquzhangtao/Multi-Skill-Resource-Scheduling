@@ -1,6 +1,7 @@
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,13 +18,15 @@ import model.Resource;
 public class ModelFactoryN {
 	
 	
-	public static void A() {
+	public static Model testModel() {
 		int resNum=50;
 		int actNum=100;
 		int skillNum=20;
 		
 		double rsf=0.5;
 		double asf=0.2;
+		
+		int maxNumOfResPerSkill=20;
 		
 		Random rnd=new Random(0);
 		Model model=new Model();
@@ -37,27 +40,56 @@ public class ModelFactoryN {
 			Resource res=new Resource();
 			model.addResource(res);
 			
-			//getRandomSubList(model.getQualifications().values(),rsf*skillNum)
+			List<Qualification> quas = getRandomSubList(model.getQualifications().values(),(int)(rsf*skillNum));
+			res.setQualifications(quas);
 			
-			for(Qualification qua:model.getQualifications().values()) {
-				if(rnd.nextDouble()<rsf) {
-					res.getQualifications().add(qua);
-				}
+			for(Qualification qua:quas) {
+				qua.getResources().add(res.getId());
 			}
 			
-			if(res.getQualifications().isEmpty()) {
-				//res.getQualifications().add(qua);
+			
+		}
+		
+	
+		
+		
+		Map<Qualification,Integer> resSkill=new HashMap<Qualification,Integer>();
+		
+		for(int i=0;i<actNum;i++) {
+			Activity act=new Activity();
+			model.addActivity(act);
+			
+			List<Qualification> quas = getRandomSubList(model.getQualifications().values(),(int)(asf*skillNum));
+			
+			for(Qualification qua:quas) {
+				int amount=1+rnd.nextInt(maxNumOfResPerSkill);
+				act.getMode().add(qua, amount);
+				
+				if(!resSkill.containsKey(qua)) {
+					resSkill.put(qua, amount);
+				}else {
+					resSkill.put(qua, resSkill.get(qua)+amount);
+				}
 			}
 			
 		}
 		
+		for(Qualification qua:model.getQualifications().values()) {
+			model.getQualificationResourceRelation().put(qua.getId(), qua.getResources());
+			for(String resStr:qua.getResources()) {
+				Resource res=model.getResources().get(resStr);
+				res.setAmount(res.getAmount()+resSkill.get(qua)/qua.getResources().size());
+			}
+		}
 		
 		
+		return model;
 	}
 	
-	public static <T> List<T> getRandomSubList(Collection<T> input, int subsetSize)
+	public static <T> List<T> getRandomSubList(Collection<T> inputc, int subsetSize)
 	{
 	    Random r = new Random();
+	    ArrayList<T> input = new ArrayList<T>(inputc);
 	    int inputSize = input.size();
 	    for (int i = 0; i < subsetSize; i++)
 	    {

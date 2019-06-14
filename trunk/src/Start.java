@@ -20,13 +20,27 @@ import solver.or.ORASolverByMIPNonObjective;
 public class Start {
 
 	public static void main(String[] args) {
+		
+		
+		
+		
+		
+		AbstractORASlover solver = new ORASolverByIteratingExchange(ModelFactoryN.testModel());
+		solver.solve(false,false);
+		
+		solver.print();
+		
+		
+		
+		
+		
 		List<Model> problems = ModelFactoryN.makeRandomExamples();
 		DecimalFormat df=new DecimalFormat("#.##");
 		df.setRoundingMode(RoundingMode.UP);
 		
 		for(Model problem:problems) {
 			//problem=ModelFactoryN.makeRandomExample(100,0.4);
-			AbstractORASlover solver;//
+			//AbstractORASlover solver;//
 			int actNum = problem.getActivities().size();
 			double skillLevel = problem.getSkillLevel();
 			
