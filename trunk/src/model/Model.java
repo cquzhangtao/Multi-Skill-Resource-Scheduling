@@ -14,7 +14,7 @@ import java.util.Set;
  * @author Shufang Xie, Tao Zhang
  * 
  */
-public class Model {
+public class Model extends Entity{
 	
 	/**
 	 * Resource map in the simulation model
@@ -72,7 +72,7 @@ public class Model {
 	public Model clone() {
 		
 		Model model=new Model();
-		
+		model.setId(getId());
 		model.resources = resources;
 		model.qualifications = qualifications;
 		model.qualificationResourceRelation = qualificationResourceRelation;

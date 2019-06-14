@@ -13,15 +13,20 @@ public class Activity extends Entity {
 	
 	private Mode mode=new Mode();
 	
-	private static int id=1;
+	private static int id=0;
 	
 	
 	private boolean started=false;
 	private long startTime=0;
 	
 	
+	public Activity(String id) {
+		setId(id);
+		
+	}
 	public Activity() {
 		setId("Act"+id++);
+		
 	}
 	
 	public boolean startable(long time) {
@@ -46,7 +51,7 @@ public class Activity extends Entity {
 	}
 
 	public void addQuaandNum(Qualification qua, int amount) {
-		mode.add(qua, amount);
+		mode.add(qua.getId(), amount);
 		
 	}
 

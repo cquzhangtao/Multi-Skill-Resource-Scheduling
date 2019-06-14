@@ -18,36 +18,74 @@ import model.Resource;
 public class ModelFactoryN {
 	
 	
-	public static Model testModel() {
-		int resNum=50;
-		int actNum=100;
+	public static List<Model> makeRandomExamples()
+	{
+		
+		int[] resourceNumLevel=new int[] {10,30,50};
+		int[] activityNumLevel=new int[] {10,20,50,100,150,200,300,400};
+		int[] skillNumLevel=new int[] {20};
+		
+		double[] skillMasterLevel=new double[] {0,0.25,0.5,0.75,1};
+		double[] skillRequireLevel=new double[] {0,0.25,0.5,0.75,1};
+		
+		List<Model> models=new ArrayList<Model>();
+		for(int resNum:resourceNumLevel) {
+		for(int actNum:activityNumLevel) {
+			for(int skillNum:skillNumLevel) {
+			for(double skillMaster:skillMasterLevel) {
+				for(double skillRequire:skillRequireLevel) {
+					models.add(generateModel(resNum,actNum,skillNum,skillMaster,skillRequire));
+				}
+			}
+		
+				
+			}
+		}
+		}
+		return models;
+		
+	}
+	public static Model generateModel(int resNum,int actNum,int skillNum,double rsf,double asf) {
+		/*int resNum=50;
+		int actNum=1000;
 		int skillNum=20;
 		
 		double rsf=0.5;
-		double asf=0.2;
+		double asf=0.2;*/
 		
-		int maxNumOfResPerSkill=20;
+		int maxNumOfResPerSkillRequiredByAct=20;		
+		double finishedActRatio=0.9;
 		
 		Random rnd=new Random(0);
 		Model model=new Model();
 		
+		model.setId(resNum+"\t"+actNum+"\t"+skillNum+"\t"+rsf+"\t"+asf+"\t|");
+		System.out.println(model.getId());
 		for(int i=0;i<skillNum;i++) {
 			Qualification qua=new Qualification("Skill"+i);
 			model.addQualification(qua);
 		}
 		
 		for(int i=0;i<resNum;i++) {
-			Resource res=new Resource();
+			Resource res=new Resource("Res"+i);
 			model.addResource(res);
-			
-			List<Qualification> quas = getRandomSubList(model.getQualifications().values(),(int)(rsf*skillNum));
+			res.setCost(rnd.nextDouble()/100);
+			List<String> quas = getRandomSubList(model.getQualifications().keySet(),(int)(rsf*skillNum));
 			res.setQualifications(quas);
 			
-			for(Qualification qua:quas) {
-				qua.getResources().add(res.getId());
+			for(String qua:quas) {
+				model.getQualifications().get(qua).getResources().add(res.getId());
 			}
 			
 			
+		}
+		
+		for(Qualification qua:model.getQualifications().values()) {
+			if(qua.getResources().isEmpty()) {
+				Resource res=model.getResources().get("Res"+rnd.nextInt(resNum));
+				res.getQualifications().add(qua.getId());				
+				qua.getResources().add(res.getId());
+			}
 		}
 		
 	
@@ -56,14 +94,15 @@ public class ModelFactoryN {
 		Map<Qualification,Integer> resSkill=new HashMap<Qualification,Integer>();
 		
 		for(int i=0;i<actNum;i++) {
-			Activity act=new Activity();
+			Activity act=new Activity("Act"+i);
 			model.addActivity(act);
 			
 			List<Qualification> quas = getRandomSubList(model.getQualifications().values(),(int)(asf*skillNum));
 			
 			for(Qualification qua:quas) {
-				int amount=1+rnd.nextInt(maxNumOfResPerSkill);
-				act.getMode().add(qua, amount);
+				qua.getActivities().add(act.getId());
+				int amount=1+rnd.nextInt(maxNumOfResPerSkillRequiredByAct);
+				act.getMode().add(qua.getId(), amount);
 				
 				if(!resSkill.containsKey(qua)) {
 					resSkill.put(qua, amount);
@@ -74,21 +113,45 @@ public class ModelFactoryN {
 			
 		}
 		
+		
 		for(Qualification qua:model.getQualifications().values()) {
-			model.getQualificationResourceRelation().put(qua.getId(), qua.getResources());
-			for(String resStr:qua.getResources()) {
-				Resource res=model.getResources().get(resStr);
-				res.setAmount(res.getAmount()+resSkill.get(qua)/qua.getResources().size());
+			if(qua.getActivities().isEmpty()) {
+				Activity act=model.getActivityMap().get("Act"+rnd.nextInt(actNum));
+				qua.getActivities().add(act.getId());
+				int amount=1+rnd.nextInt(maxNumOfResPerSkillRequiredByAct);
+				//if(act.getMode().getQualificationAmountMap().containsKey(qua.getId())) {
+				//	act.getMode().add(qua.getId(), act.getMode().getQualificationAmountMap().get(qua.getId())+amount);
+				//}else {
+					act.getMode().add(qua.getId(), amount);
+				//}
+				if(!resSkill.containsKey(qua)) {
+					resSkill.put(qua, amount);
+				}else {
+					resSkill.put(qua, resSkill.get(qua)+amount);
+				}			
+				
 			}
 		}
 		
 		
+		for(Qualification qua:model.getQualifications().values()) {
+			model.getQualificationResourceRelation().put(qua.getId(), qua.getResources());
+			for(String resStr:qua.getResources()) {
+				Resource res=model.getResources().get(resStr);
+				res.setTotalAmount((int) (Math.max(1,res.getAmount()+finishedActRatio*resSkill.get(qua)/qua.getResources().size())));
+			}
+		}
+		
+		//model.print();
 		return model;
 	}
 	
 	public static <T> List<T> getRandomSubList(Collection<T> inputc, int subsetSize)
 	{
-	    Random r = new Random();
+		if(subsetSize==0) {
+			subsetSize=1;
+		}
+	    Random r = new Random(0);
 	    ArrayList<T> input = new ArrayList<T>(inputc);
 	    int inputSize = input.size();
 	    for (int i = 0; i < subsetSize; i++)
@@ -193,7 +256,7 @@ public class ModelFactoryN {
 
 	}
 	
-	public static List<Model> makeRandomExamples()
+	public static List<Model> makeRandomExamplesOld()
 	{
 		int[] activityNum=new int[] {10,20,50,100,150,200,300,400};
 		double[] skillMasterLevel=new double[] {0,0.25,0.5,0.75,1};
@@ -260,7 +323,7 @@ public class ModelFactoryN {
 				if(random.nextDouble()<rnd1){
 					list.add(res.getId());
 					sum+=res.getAvailableAmount();
-					res.getQualifications().add(qua);
+					res.getQualifications().add(qua.getId());
 				}
 			}
 			
@@ -273,7 +336,7 @@ public class ModelFactoryN {
 		for(Resource res:model.getResources().values()) {
 			if(res.getQualifications().isEmpty()) {
 				Qualification qua = quas[random.nextInt(quas.length)];
-				res.getQualifications().add(qua);
+				res.getQualifications().add(qua.getId());
 				quaResRelationMap.get(qua.getId()).add(res.getId());
 				qualificationAmount.put(qua, qualificationAmount.get(qua)+res.getAmount());
 			}
@@ -284,7 +347,7 @@ public class ModelFactoryN {
 			if(quaResRelationMap.get(qua.getId()).isEmpty()) {
 				Resource res = resources[random.nextInt(resources.length)];
 				quaResRelationMap.get(qua.getId()).add(res.getId());
-				res.getQualifications().add(qua);
+				res.getQualifications().add(qua.getId());
 				qualificationAmount.put(qua, qualificationAmount.get(qua)+res.getAmount());
 			}
 		}

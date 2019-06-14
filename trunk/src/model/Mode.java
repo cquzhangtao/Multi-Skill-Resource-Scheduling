@@ -19,8 +19,8 @@ public class Mode {
 		this.qualificationAmountMap = qualificationAmountMap;
 	}
 	
-	public void add(Qualification qua,int amount) {
-		qualificationAmountMap.put(qua.getId(), amount);
+	public void add(String qua,int amount) {
+		qualificationAmountMap.put(qua, amount);
 	}
 
 	public long getProcessingTime() {

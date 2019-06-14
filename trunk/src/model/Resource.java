@@ -8,8 +8,14 @@ public class Resource extends Entity{
 	private int amount;
 	private int availableAmount;
 	
-	private List<Qualification> qualifications=new ArrayList<Qualification>();
+	private List<String> qualifications=new ArrayList<String>();
 	
+	public Resource(String id) {
+		setId(id);
+	}
+	public Resource() {
+		
+	}
 	public boolean getDummy() {
 		return false;
 	}
@@ -89,13 +95,13 @@ public class Resource extends Entity{
 
 
 
-	public List<Qualification> getQualifications() {
+	public List<String> getQualifications() {
 		return qualifications;
 	}
 
 
 
-	public void setQualifications(List<Qualification> qualifications) {
+	public void setQualifications(List<String> qualifications) {
 		this.qualifications = qualifications;
 	}
 
