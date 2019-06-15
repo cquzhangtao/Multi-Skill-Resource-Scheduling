@@ -69,8 +69,8 @@ public class ModelFactoryN {
 		for(int i=0;i<resNum;i++) {
 			Resource res=new Resource("Res"+i);
 			model.addResource(res);
-			res.setCost(rnd.nextDouble()/1000);
-			List<String> quas = getRandomSubList(model.getQualifications().keySet(),(int)(rsf*skillNum));
+			res.setCost((0.1+rnd.nextDouble())/1000);
+			List<String> quas = getRandomSubList(rnd,model.getQualifications().keySet(),(int)(rsf*skillNum));
 			res.setQualifications(quas);
 			
 			for(String qua:quas) {
@@ -97,7 +97,7 @@ public class ModelFactoryN {
 			Activity act=new Activity("Act"+i);
 			model.addActivity(act);
 			
-			List<Qualification> quas = getRandomSubList(model.getQualifications().values(),(int)(asf*skillNum));
+			List<Qualification> quas = getRandomSubList(rnd,model.getQualifications().values(),(int)(asf*skillNum));
 			
 			for(Qualification qua:quas) {
 				qua.getActivities().add(act.getId());
@@ -146,12 +146,12 @@ public class ModelFactoryN {
 		return model;
 	}
 	
-	public static <T> List<T> getRandomSubList(Collection<T> inputc, int subsetSize)
+	public static <T> List<T> getRandomSubList(Random r,Collection<T> inputc, int subsetSize)
 	{
 		if(subsetSize==0) {
 			subsetSize=1;
 		}
-	    Random r = new Random(0);
+	   
 	    ArrayList<T> input = new ArrayList<T>(inputc);
 	    int inputSize = input.size();
 	    for (int i = 0; i < subsetSize; i++)
@@ -276,6 +276,7 @@ public class ModelFactoryN {
 	
 	public static Model makeRandomExample(int actNumber,double skillLevel ) {
 		Model model=new Model();
+		model.setId(actNumber+"\t"+skillLevel);
 		model.setSkillLevel(skillLevel);
 		//Map<String, Resource>  resList=new HashMap<String, Resource> ();
 		//model.setResources(resList);
@@ -306,7 +307,7 @@ public class ModelFactoryN {
 			Resource res = new Resource();
 			res.setResId("res"+i);
 			res.setTotalAmount(1+random.nextInt(resourceAmount-1));
-			res.setCost(0.1+random.nextInt(100));
+			res.setCost((0.1+random.nextInt(100))/1000);
 			model.addResource(res);
 		}
 		
