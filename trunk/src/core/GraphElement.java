@@ -177,17 +177,56 @@ public class GraphElement {
 			}
 			resourcesList = getOverlapResources();
 		}
+		
+		handledRequiredNeighborQuaList.clear();
+		resourcesList = getOverlapResourcesNonExclusive();
+		while (resourcesList != null) {
+			for (String res : resourcesList) {
+				sum += getResAvailableNum(res);
+				if (sum <= requiredResNum) {
+					if(allocation.containsKey(res)) {
+						allocation.put(res,allocation.get(res) +getResAvailableNum(res));
+					}else {
+					allocation.put(res, getResAvailableNum(res));
+					}
+					setResUsedNum(res, getResUsedNum(res) + getResAvailableNum(res));
+				}
+				else {
+					int usedNum = getResAvailableNum(res) - (sum - requiredResNum);
+					if(allocation.containsKey(res)) {
+						allocation.put(res,allocation.get(res) +usedNum);
+					}else {
+						allocation.put(res, usedNum);
+					}
+					setResUsedNum(res, getResUsedNum(res) + usedNum);
+					break;
+				}
+			}
+			if (sum >= requiredResNum) {
+				this.setAssignedResource(true);
+				return allocation;
+			}
+			resourcesList = getOverlapResourcesNonExclusive();
+		}
+		
 		return null;
 		
 	}
 	
+	
+	private List<String> getOverlapResources() {
+		return getOverlapResources(true);
+	}
+	private List<String> getOverlapResourcesNonExclusive() {
+		return getOverlapResources(false);
+	}
 	/**
 	 * get the resources in the sharing area between the qualification and its
 	 * neighbor with the lowest urgent ratio
 	 * 
 	 * @return Overlapping resources in a list
 	 */
-	private List<String> getOverlapResources() {
+	private List<String> getOverlapResources(boolean exclusive) {
 	
 		double min = Double.MAX_VALUE;
 		GraphElement minRQ = null;
@@ -205,16 +244,24 @@ public class GraphElement {
 		if (minRQ == null) {
 			return null;
 		}
-		List<String> othersSum = new ArrayList<String>();
-		for (GraphElement rq : sharedResources.keySet()) {
-			if (!handledRequiredNeighborQuaList.contains(rq)) {
-				othersSum.addAll(sharedResources.get(rq));
-			}
-		}
 		List<String> sum = new ArrayList<String>(sharedResources.get(minRQ));
-		sum.removeAll(othersSum);
+		
+		if(exclusive) {
+			List<String> othersSum = new ArrayList<String>();
+			for (GraphElement rq : sharedResources.keySet()) {
+				//if (!handledRequiredNeighborQuaList.contains(rq)) {
+				if(rq!=minRQ) {
+					othersSum.addAll(sharedResources.get(rq));
+				}
+			}
+			sum.removeAll(othersSum);
+		}
+		
+	
 		return sum;
 	}
+	
+
 	
 	private void setCurrentTotalAvailableResNum() {
 	
