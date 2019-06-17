@@ -141,7 +141,8 @@ public abstract class AbstractORASlover {
 			}
 		}
 		else {
-			System.out.println("No feasible solution found");
+			//System.out.println("No feasible solution found");
+			
 		}
 		time=System.currentTimeMillis()-start;
 	}

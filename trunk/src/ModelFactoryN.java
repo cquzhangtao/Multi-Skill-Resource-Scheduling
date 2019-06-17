@@ -23,12 +23,18 @@ public class ModelFactoryN {
 		
 		
 		int[] resourceNumLevel = new int[] { 10 ,30,50 };
-		int[] activityNumLevel = new int[] { 10,20,50,100,150,200,300,400 };
-		int[] skillNumLevel=new int[] {5};
+		int[] activityNumLevel = new int[] { 10,20,50,100,150,200/*,300,400 */};
+		int[] skillNumLevel=new int[] {12};
 		
-	double[] skillMasterLevel = new double[] {  0, 0.25,0.5,0.75/*,1*/};
-	double[] skillRequireLevel = new double[] {  0,0.25,0.5,0.75/*,1*/};
+		double[] skillMasterLevel = new double[] {  0, 0.25,0.5,0.75,1};
+		double[] skillRequireLevel = new double[] {  0,0.25,0.5,0.75,1};
 	
+//		int[] resourceNumLevel = new int[] { 10  };
+//		int[] activityNumLevel = new int[] { 10};
+//		int[] skillNumLevel=new int[] {12};
+//		
+//		double[] skillMasterLevel = new double[] {0.25};
+//		double[] skillRequireLevel = new double[] { 0.25};
 		
 		List<Model> models=new ArrayList<Model>();
 		for(int resNum:resourceNumLevel) {
@@ -138,9 +144,18 @@ public class ModelFactoryN {
 		
 		for(Qualification qua:model.getQualifications().values()) {
 			model.getQualificationResourceRelation().put(qua.getId(), qua.getResources());
+			int sum=0;
 			for(String resStr:qua.getResources()) {
 				Resource res=model.getResources().get(resStr);
-				res.setTotalAmount((int) (Math.max(1,res.getAmount()+finishedActRatio*resSkill.get(qua)/qua.getResources().size())));
+				double amount=finishedActRatio*resSkill.get(qua)/qua.getResources().size();
+				if(amount-(int)amount>0) {
+					amount++;
+				}
+				res.setTotalAmount(Math.max(1,res.getAmount()+(int)amount));
+				sum+=(int)amount;
+			}
+			if(sum-finishedActRatio*resSkill.get(qua)<0) {
+				//System.out.println("Generate cases wrong,"+sum+","+finishedActRatio*resSkill.get(qua));
 			}
 		}
 		

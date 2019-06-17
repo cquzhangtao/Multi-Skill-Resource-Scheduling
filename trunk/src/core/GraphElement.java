@@ -45,8 +45,10 @@ public class GraphElement {
 	
 	private List<GraphElement> handledRequiredNeighborQuaList = new ArrayList<GraphElement>();
 	
+	private Map<String, Map<String, Integer>> unitedResults;
+	
 	public GraphElement(String qualification, List<Activity> activityList, Map<String, List<String>> quaResRelationMap, Map<String, Integer> resNumMap,
-			Map<String, Integer> usedResNumMap) {
+			Map<String, Integer> usedResNumMap, Map<String, Map<String, Integer>> unitedResults) {
 	
 		this.quaId = qualification;
 		this.quaResRelationMap = quaResRelationMap;
@@ -55,6 +57,7 @@ public class GraphElement {
 		setRequiredResourcesNum(activityList);
 		setCurrentTotalAvailableResNum();
 		totalResNum = currentTotalAvailableResNum;
+		this.unitedResults=unitedResults;
 	}
 	
 	/**
@@ -209,6 +212,58 @@ public class GraphElement {
 			resourcesList = getOverlapResourcesNonExclusive();
 		}
 		
+		
+	/*	for (GraphElement rq : sharedResources.keySet()) {
+			//if(!rq.isAssignedResource()) {
+			//	continue;
+			//}
+			List<String>resAssignedToRQFromOlverlappingArea=new ArrayList<String>();
+			int num=0;
+			for(String res:sharedResources.get(rq)) {
+				if(unitedResults.get(rq.getQualification()).containsKey(res)) {
+					resAssignedToRQFromOlverlappingArea.add(res);
+					num+=unitedResults.get(rq.getQualification()).get(res);
+				}
+			}
+			
+			for(GraphElement rq1:rq.sharedResources.keySet()) {
+				if(!rq1.isAssignedResource()) {
+					continue;
+				}
+				for(String res:rq1.sharedResources.get(rq)) {
+					int avgNum = getResAvailableNum(res);
+					if(avgNum==0) {
+						continue;
+					}
+					sum += avgNum;
+					if (sum <= requiredResNum) {
+						if(allocation.containsKey(res)) {
+							allocation.put(res,allocation.get(res) +getResAvailableNum(res));
+						}else {
+						allocation.put(res, getResAvailableNum(res));
+						}
+						setResUsedNum(res, getResUsedNum(res) + getResAvailableNum(res));
+					}
+					else {
+						int usedNum = getResAvailableNum(res) - (sum - requiredResNum);
+						if(allocation.containsKey(res)) {
+							allocation.put(res,allocation.get(res) +usedNum);
+						}else {
+							allocation.put(res, usedNum);
+						}
+						setResUsedNum(res, getResUsedNum(res) + usedNum);
+						break;
+					}
+				}
+				if (sum >= requiredResNum) {
+					this.setAssignedResource(true);
+					return allocation;
+				}
+				
+			}
+		}*/
+		
+		
 		return null;
 		
 	}
@@ -231,6 +286,9 @@ public class GraphElement {
 		double min = Double.MAX_VALUE;
 		GraphElement minRQ = null;
 		for (GraphElement rq : sharedResources.keySet()) {
+			if(!rq.isAssignedResource()) {
+				continue;
+			}
 			if (!handledRequiredNeighborQuaList.contains(rq)) {
 				rq.updateRatio();
 				double ratio = rq.getUrgentRatio();
@@ -240,10 +298,26 @@ public class GraphElement {
 				}
 			}
 		}
-		handledRequiredNeighborQuaList.add(minRQ);
+		if (minRQ == null) {
+			for (GraphElement rq : sharedResources.keySet()) {
+				if(rq.isAssignedResource()) {
+					continue;
+				}
+				if (!handledRequiredNeighborQuaList.contains(rq)) {
+					rq.updateRatio();
+					double ratio = rq.getUrgentRatio();
+					if (min > ratio) {
+						min = ratio;
+						minRQ = rq;
+					}
+				}
+			}
+		}
 		if (minRQ == null) {
 			return null;
 		}
+		handledRequiredNeighborQuaList.add(minRQ);
+	
 		List<String> sum = new ArrayList<String>(sharedResources.get(minRQ));
 		
 		if(exclusive) {

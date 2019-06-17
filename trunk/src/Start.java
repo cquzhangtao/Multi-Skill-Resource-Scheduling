@@ -72,9 +72,11 @@ public class Start {
 			double cost3 = solver.getCost();
 			double runTime3 = solver.getTime();
 
-			System.out.println(problem.getId() + "\t" + exeAct1 + "\t" + df.format(cost1) + "\t" + runTime1
+			//if((exeAct2-exeAct1)>0) {
+			System.out.println(problem.getId()+ "\t" + (exeAct2-exeAct1)+ "\t" + exeAct1 + "\t" + df.format(cost1) + "\t" + runTime1
 					+ "\t" + exeAct2 + "\t" + df.format(cost2) + "\t" + runTime2 + "\t" + exeAct3 + "\t"
 					+ df.format(cost3) + "\t" + runTime3);
+			//}
 
 			/*
 			 * System.out.println(actNum+"\t"+skillLevel+"\t"+exeAct1+"\t"+df.format(cost1)+
