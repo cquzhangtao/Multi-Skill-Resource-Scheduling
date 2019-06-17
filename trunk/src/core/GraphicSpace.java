@@ -1,7 +1,10 @@
 
 package core;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 /**
  * This class is a list used to describe an overlapping graph which includes
@@ -34,6 +37,25 @@ public class GraphicSpace extends HashMap<String, GraphElement> {
 			
 		}
 		return maxRQ;
+		
+	}
+	public GraphElement getRandomGraphElement() {
+		Random ran=new Random();
+		List<GraphElement> list=new ArrayList<GraphElement>();
+		for(GraphElement ele:this.values()) {
+			if(!ele.isAssignedResource()) {
+				list.add(ele);
+			}
+		}
+if(list.isEmpty()) {
+			return null;
+		}
+		GraphElement rq = list.get(ran.nextInt(list.size()));
+		
+		return rq;
+		
+		
+		
 		
 	}
 	

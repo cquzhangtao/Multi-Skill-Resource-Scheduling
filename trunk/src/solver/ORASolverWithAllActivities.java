@@ -77,7 +77,12 @@ public class ORASolverWithAllActivities extends AbstractORASlover {
 		}
 		for (int finishedGraphicElementNum = 0; finishedGraphicElementNum < graphicSpace.size(); finishedGraphicElementNum++) {
 			graphicSpace.update();
+			
 			GraphElement rq = graphicSpace.getMostUrgentGraphElement();
+			
+			//GraphElement rq=graphicSpace.getRandomGraphElement();
+			
+			
 			if (rq == null) {
 				continue;
 			}

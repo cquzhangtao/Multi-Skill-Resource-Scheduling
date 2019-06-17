@@ -21,12 +21,13 @@ public class ModelFactoryN {
 	public static List<Model> makeRandomExamples()
 	{
 		
-		int[] resourceNumLevel=new int[] {10,30,50};
-		int[] activityNumLevel=new int[] {10,20,50,100,150,200,300,400};
-		int[] skillNumLevel=new int[] {20};
+		int[] resourceNumLevel = new int[] { 10 ,30,50 };
+		int[] activityNumLevel = new int[] { 10,20,50,100,150,200,300,400 };
+		int[] skillNumLevel=new int[] {5};
 		
-		double[] skillMasterLevel=new double[] {0,0.25,0.5,0.75/*,1*/};
-		double[] skillRequireLevel=new double[] {0,0.25,0.5,0.75/*,1*/};
+	double[] skillMasterLevel = new double[] {  0, 0.25,0.5,0.75/*,1*/};
+	double[] skillRequireLevel = new double[] {  0,0.25,0.5,0.75/*,1*/};
+	
 		
 		List<Model> models=new ArrayList<Model>();
 		for(int resNum:resourceNumLevel) {
@@ -60,7 +61,7 @@ public class ModelFactoryN {
 		Model model=new Model();
 		
 		model.setId(resNum+"\t"+actNum+"\t"+skillNum+"\t"+rsf+"\t"+asf+"\t|");
-		System.out.println(model.getId());
+		//System.out.println(model.getId());
 		for(int i=0;i<skillNum;i++) {
 			Qualification qua=new Qualification("Skill"+i);
 			model.addQualification(qua);
