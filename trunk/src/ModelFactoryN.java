@@ -21,6 +21,7 @@ public class ModelFactoryN {
 	public static List<Model> makeRandomExamples()
 	{
 		
+		
 		int[] resourceNumLevel = new int[] { 10 ,30,50 };
 		int[] activityNumLevel = new int[] { 10,20,50,100,150,200,300,400 };
 		int[] skillNumLevel=new int[] {5};
