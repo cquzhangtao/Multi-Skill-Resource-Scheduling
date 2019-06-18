@@ -36,13 +36,17 @@ public class ModelFactoryN {
 //		double[] skillMasterLevel = new double[] {0.25};
 //		double[] skillRequireLevel = new double[] { 0.25};
 		
+		int replication=50;
+		Random rnd=new Random(0);
 		List<Model> models=new ArrayList<Model>();
 		for(int resNum:resourceNumLevel) {
 		for(int actNum:activityNumLevel) {
 			for(int skillNum:skillNumLevel) {
 			for(double skillMaster:skillMasterLevel) {
 				for(double skillRequire:skillRequireLevel) {
-					models.add(generateModel(resNum,actNum,skillNum,skillMaster,skillRequire));
+					for(int i=1;i<=replication;i++) {
+						models.add(generateModel(rnd,resNum,actNum,skillNum,skillMaster,skillRequire,i));
+					}
 				}
 			}
 		
@@ -53,7 +57,7 @@ public class ModelFactoryN {
 		return models;
 		
 	}
-	public static Model generateModel(int resNum,int actNum,int skillNum,double rsf,double asf) {
+	public static Model generateModel(Random rnd,int resNum,int actNum,int skillNum,double rsf,double asf,int rep) {
 		/*int resNum=50;
 		int actNum=1000;
 		int skillNum=20;
@@ -64,10 +68,10 @@ public class ModelFactoryN {
 		int maxNumOfResPerSkillRequiredByAct=20;		
 		double finishedActRatio=0.9;
 		
-		Random rnd=new Random(0);
+		
 		Model model=new Model();
 		
-		model.setId(resNum+"\t"+actNum+"\t"+skillNum+"\t"+rsf+"\t"+asf+"\t|");
+		model.setId(resNum+"\t"+actNum+"\t"+skillNum+"\t"+rsf+"\t"+asf+"\t"+rep+"\t|");
 		//System.out.println(model.getId());
 		for(int i=0;i<skillNum;i++) {
 			Qualification qua=new Qualification("Skill"+i);
