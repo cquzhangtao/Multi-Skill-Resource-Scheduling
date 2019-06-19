@@ -174,7 +174,7 @@ public abstract class AbstractORASlover {
 	
 		//problem.print();
 		//printTempData();
-		//printFinalResults();
+		printFinalResults();
 		//printTrackResults();
 		printFinal();
 		

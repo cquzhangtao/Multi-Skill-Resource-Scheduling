@@ -77,7 +77,7 @@ public class ORASolverByReplacingSharingResources extends ORASolverByExchangingR
 				}
 				List<String> sortedUnUsedResInCurrentQua = sortResAscending(unUsedResInCurrentQua);
 				Map<String, Integer> usedResInNeighborQua = unitedResults.get(neighbor.getQualification());
-				List<String> sortedUsedResInNeighborQua = sortResDescending(usedResInNeighborQua);
+				List<String> sortedUsedResInNeighborQua = sortResDescending(usedResInNeighborQua);	
 				int usedResNumInNeighborArea = 0;
 				for (String res2 : sortedUsedResInNeighborQua) {
 					usedResNumInNeighborArea += unitedResults.get(neighbor.getQualification()).get(res2);

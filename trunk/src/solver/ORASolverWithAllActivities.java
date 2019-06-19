@@ -33,7 +33,7 @@ public class ORASolverWithAllActivities extends AbstractORASlover {
 	/**
 	 * The overlapping diagram of resources.
 	 */
-	protected GraphicSpace graphicSpace = new GraphicSpace();
+	protected GraphicSpace graphicSpace;
 	
 	/**
 	 * An united results we get from the overlapping diagram
@@ -55,6 +55,7 @@ public class ORASolverWithAllActivities extends AbstractORASlover {
 	public ORASolverWithAllActivities(Model problem) {
 	
 		super(problem);
+		graphicSpace = new GraphicSpace(problem);
 	}
 	
 	@Override
@@ -78,9 +79,11 @@ public class ORASolverWithAllActivities extends AbstractORASlover {
 		for (int finishedGraphicElementNum = 0; finishedGraphicElementNum < graphicSpace.size(); finishedGraphicElementNum++) {
 			graphicSpace.update();
 			
-			GraphElement rq = graphicSpace.getMostUrgentGraphElement();
+			//GraphElement rq = graphicSpace.getMostUrgentGraphElement();
 			
+			//GraphElement rq=graphicSpace.getLeastUrgentGraphElement();
 			//GraphElement rq=graphicSpace.getRandomGraphElement();
+			GraphElement rq = graphicSpace.getLeastResourceGraphElement();
 			
 			
 			if (rq == null) {

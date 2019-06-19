@@ -2,9 +2,12 @@
 package core;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+
+import model.Model;
 
 /**
  * This class is a list used to describe an overlapping graph which includes
@@ -17,11 +20,40 @@ public class GraphicSpace extends HashMap<String, GraphElement> {
 	
 	private static final long serialVersionUID = 1L;
 	
+	private Model problem;
+	
+	
+	public GraphicSpace(Model problem) {
+		this.problem=problem;
+	}
+	
 	/**
 	 * To obtain an elements with the highest ratio in the graph.
 	 * 
 	 * @return An elements with the highest ratio in the graph
 	 */
+	
+	public static GraphElement getNextResourceGraphElement(Model problem,Collection<GraphElement> elements) {
+		GraphElement maxRQ = null;
+		int min = Integer.MAX_VALUE;
+		for (GraphElement rq :elements) {
+			if (!rq.isAssignedResource()) {
+				int ratio = problem.getQualifications().get(rq.getQualification()).getResources().size();
+				if (ratio <min) {
+					min = ratio;
+					maxRQ = rq;
+				}
+			}
+			
+		}
+		return maxRQ;
+	}
+	
+	public GraphElement getLeastResourceGraphElement() {
+		
+		return getNextResourceGraphElement(problem,this.values());
+		
+	}
 	public GraphElement getMostUrgentGraphElement() {
 	
 		GraphElement maxRQ = null;
@@ -37,6 +69,21 @@ public class GraphicSpace extends HashMap<String, GraphElement> {
 			
 		}
 		return maxRQ;
+		
+	}
+	public GraphElement getLeastUrgentGraphElement() {
+		GraphElement minRQ=null;
+		double min=Double.MAX_VALUE;
+		for(GraphElement rq:this.values()) {
+			if(!rq.isAssignedResource()) {
+				double ratio=rq.getUrgentRatio();
+				if(ratio< min) {
+					min=ratio;
+					minRQ=rq;
+				}
+			}
+		}
+		return minRQ;
 		
 	}
 	public GraphElement getRandomGraphElement() {

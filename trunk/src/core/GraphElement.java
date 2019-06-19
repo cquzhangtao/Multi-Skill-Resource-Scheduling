@@ -144,7 +144,7 @@ public class GraphElement {
 		Map<String, Integer> allocation = new HashMap<String, Integer>();
 		for (String res : exclusiveResources) {
 			sum += getResAvailableNum(res);
-			if (sum <= requiredResNum) {
+			if (sum <= requiredResNum) { // exclusive resources is not enough
 				allocation.put(res, getResAvailableNum(res));
 				setResUsedNum(res, getResUsedNum(res) + getResAvailableNum(res));
 			}
@@ -283,7 +283,10 @@ public class GraphElement {
 	 */
 	private List<String> getOverlapResources(boolean exclusive) {
 	
-		double min = Double.MAX_VALUE;
+		GraphElement minRQ=GraphicSpace.getNextResourceGraphElement(problem, sharedResources.keySet());
+		
+		
+		/*double min = Double.MAX_VALUE;
 		GraphElement minRQ = null;
 		for (GraphElement rq : sharedResources.keySet()) {
 			if(!rq.isAssignedResource()) {
@@ -297,7 +300,7 @@ public class GraphElement {
 					minRQ = rq;
 				}
 			}
-		}
+		}*/
 		if (minRQ == null) {
 			for (GraphElement rq : sharedResources.keySet()) {
 				if(rq.isAssignedResource()) {
