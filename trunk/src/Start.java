@@ -29,12 +29,13 @@ public class Start {
 		 * solver.print();
 		 */
 
-		List<Model> problems = ModelFactoryN.makeRandomExamples();
+		List<Model> problems = ModelFactoryN.makeTestExamples();
 		DecimalFormat df = new DecimalFormat("#.##");
 		df.setRoundingMode(RoundingMode.UP);
 
 		for (Model problem : problems) {
 			// problem=ModelFactoryN.makeRandomExample(100,0.4);
+			//problem.print();
 			AbstractORASlover solver;//
 			int actNum = problem.getActivities().size();
 			double skillLevel = problem.getSkillLevel();
@@ -54,7 +55,7 @@ public class Start {
 
 			solver = new ORASolverByIteratingExchange(problem);
 			solver.solve(false, false);
-			// solver.print();
+			//solver.print();
 			int exeAct1 = solver.getExecutedActivityNumber();
 			double cost1 = solver.getCost();
 			double runTime1 = solver.getTime();
@@ -72,11 +73,11 @@ public class Start {
 			double cost3 = solver.getCost();
 			double runTime3 = solver.getTime();
 
-			//if((exeAct2-exeAct1)>0) {
+			if((exeAct2-exeAct1)>0) {
 			System.out.println(problem.getId()+ "\t" + (exeAct2-exeAct1)+ "\t" + exeAct1 + "\t" + df.format(cost1) + "\t" + runTime1
 					+ "\t" + exeAct2 + "\t" + df.format(cost2) + "\t" + runTime2 + "\t" + exeAct3 + "\t"
 					+ df.format(cost3) + "\t" + runTime3);
-			//}
+			}
 
 			/*
 			 * System.out.println(actNum+"\t"+skillLevel+"\t"+exeAct1+"\t"+df.format(cost1)+

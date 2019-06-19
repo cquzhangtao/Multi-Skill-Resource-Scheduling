@@ -17,26 +17,64 @@ import model.Resource;
 
 public class ModelFactoryN {
 	
+	public static List<Model> makeTestExamples()
+	{
+		
+		
+	int[] resourceNumLevel = new int[] { 10 };
+	int[] activityNumLevel = new int[] { 10};
+		int[] skillNumLevel=new int[] {12};
 	
+	double[] skillMasterLevel = new double[] {  0.25};
+	double[] skillRequireLevel = new double[] {  0};
+	
+//		int[] resourceNumLevel = new int[] { 10  };
+//		int[] activityNumLevel = new int[] { 20};
+//		int[] skillNumLevel=new int[] {5};
+//		
+//		double[] skillMasterLevel = new double[] {0.5};
+//		double[] skillRequireLevel = new double[] { 0.5};
+//		
+		int replication=1;
+		Random rnd=new Random(0);
+		List<Model> models=new ArrayList<Model>();
+		for(int resNum:resourceNumLevel) {
+		for(int actNum:activityNumLevel) {
+			for(int skillNum:skillNumLevel) {
+			for(double skillMaster:skillMasterLevel) {
+				for(double skillRequire:skillRequireLevel) {
+					for(int i=1;i<=replication;i++) {
+						models.add(generateModel(rnd,resNum,actNum,skillNum,skillMaster,skillRequire,i));
+					}
+				}
+			}
+		
+				
+			}
+		}
+		}
+		return models;
+		
+	}
 	public static List<Model> makeRandomExamples()
 	{
 		
 		
-		int[] resourceNumLevel = new int[] { 10 ,30,50 };
-		int[] activityNumLevel = new int[] { 10,20,50,100,150,200/*,300,400 */};
+	int[] resourceNumLevel = new int[] { 10 ,30,50 };
+	int[] activityNumLevel = new int[] { 10,20,50,100,150,200/*,300,400 */};
 		int[] skillNumLevel=new int[] {12};
-		
-		double[] skillMasterLevel = new double[] {  0, 0.25,0.5,0.75,1};
-		double[] skillRequireLevel = new double[] {  0,0.25,0.5,0.75,1};
+	
+	double[] skillMasterLevel = new double[] {  0, 0.25,0.5,0.75,1};
+	double[] skillRequireLevel = new double[] {  0,0.25,0.5,0.75,1};
 	
 //		int[] resourceNumLevel = new int[] { 10  };
-//		int[] activityNumLevel = new int[] { 10};
-//		int[] skillNumLevel=new int[] {12};
+//		int[] activityNumLevel = new int[] { 20};
+//		int[] skillNumLevel=new int[] {5};
 //		
-//		double[] skillMasterLevel = new double[] {0.25};
-//		double[] skillRequireLevel = new double[] { 0.25};
-		
-		int replication=50;
+//		double[] skillMasterLevel = new double[] {0.5};
+//		double[] skillRequireLevel = new double[] { 0.5};
+//		
+		int replication=1;
 		Random rnd=new Random(0);
 		List<Model> models=new ArrayList<Model>();
 		for(int resNum:resourceNumLevel) {
@@ -71,6 +109,8 @@ public class ModelFactoryN {
 		
 		Model model=new Model();
 		
+		rnd=new Random(0);
+		
 		model.setId(resNum+"\t"+actNum+"\t"+skillNum+"\t"+rsf+"\t"+asf+"\t"+rep+"\t|");
 		//System.out.println(model.getId());
 		for(int i=0;i<skillNum;i++) {
@@ -81,9 +121,11 @@ public class ModelFactoryN {
 		for(int i=0;i<resNum;i++) {
 			Resource res=new Resource("Res"+i);
 			model.addResource(res);
-			res.setCost((0.1+rnd.nextDouble())/1000);
+			
 			List<String> quas = getRandomSubList(rnd,model.getQualifications().keySet(),(int)(rsf*skillNum));
 			res.setQualifications(quas);
+			
+			res.setCost((0.1+rnd.nextDouble())/1000);
 			
 			for(String qua:quas) {
 				model.getQualifications().get(qua).getResources().add(res.getId());
