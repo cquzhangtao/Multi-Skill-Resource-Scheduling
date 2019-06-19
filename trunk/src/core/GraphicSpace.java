@@ -32,6 +32,23 @@ public class GraphicSpace extends HashMap<String, GraphElement> {
 	 * 
 	 * @return An elements with the highest ratio in the graph
 	 */
+	public GraphElement getLeastResourceGraphElement() {
+		
+		GraphElement maxRQ = null;
+		double max = Double.MIN_VALUE;
+		for (GraphElement rq : this.values()) {
+			if (!rq.isAssignedResource()) {
+				double ratio = rq.getUrgentRatio();
+				if (ratio > max) {
+					max = ratio;
+					maxRQ = rq;
+				}
+			}
+			
+		}
+		return maxRQ;
+		
+	}
 	
 	public static GraphElement getNextResourceGraphElement(Model problem,Collection<GraphElement> elements) {
 		GraphElement maxRQ = null;
