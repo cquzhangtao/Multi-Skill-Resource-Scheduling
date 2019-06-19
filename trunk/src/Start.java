@@ -29,7 +29,7 @@ public class Start {
 		 * solver.print();
 		 */
 
-		List<Model> problems = ModelFactoryN.makeTestExamples();
+		List<Model> problems = ModelFactoryN.makeRandomExamples();
 		DecimalFormat df = new DecimalFormat("#.##");
 		df.setRoundingMode(RoundingMode.UP);
 

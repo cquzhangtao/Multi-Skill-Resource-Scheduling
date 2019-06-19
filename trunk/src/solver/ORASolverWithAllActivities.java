@@ -111,7 +111,7 @@ public class ORASolverWithAllActivities extends AbstractORASlover {
 			if (qua.equals("DUMMY")) {
 				continue;
 			}
-			GraphElement element = new GraphElement(qua, problem.getActivities(), problem.getQualificationResourceRelation(), totalResNumMap, usedResNumMap,unitedResults);
+			GraphElement element = new GraphElement(qua, problem.getActivities(), problem.getQualificationResourceRelation(), totalResNumMap, usedResNumMap,unitedResults,problem);
 			if (element.getRequiredResNum() > element.getCurrentTotalAvailableResNum()) {
 				return false;
 			}

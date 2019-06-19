@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import model.Activity;
+import model.Model;
 
 
 
@@ -47,8 +48,10 @@ public class GraphElement {
 	
 	private Map<String, Map<String, Integer>> unitedResults;
 	
+	private Model problem;
+	
 	public GraphElement(String qualification, List<Activity> activityList, Map<String, List<String>> quaResRelationMap, Map<String, Integer> resNumMap,
-			Map<String, Integer> usedResNumMap, Map<String, Map<String, Integer>> unitedResults) {
+			Map<String, Integer> usedResNumMap, Map<String, Map<String, Integer>> unitedResults,Model problem) {
 	
 		this.quaId = qualification;
 		this.quaResRelationMap = quaResRelationMap;
@@ -58,6 +61,7 @@ public class GraphElement {
 		setCurrentTotalAvailableResNum();
 		totalResNum = currentTotalAvailableResNum;
 		this.unitedResults=unitedResults;
+		this.problem=problem;
 	}
 	
 	/**
@@ -160,6 +164,7 @@ public class GraphElement {
 			return allocation;
 		}
 		List<String> resourcesList = getOverlapResources();
+		
 		while (resourcesList != null) {
 			for (String res : resourcesList) {
 				sum += getResAvailableNum(res);
@@ -271,6 +276,7 @@ public class GraphElement {
 	
 	private List<String> getOverlapResources() {
 		return getOverlapResources(true);
+		//return getNewOverlapResources(true);// try to sort the neighbor according to the resources number of each skill
 	}
 	private List<String> getOverlapResourcesNonExclusive() {
 		return getOverlapResources(false);
@@ -283,10 +289,10 @@ public class GraphElement {
 	 */
 	private List<String> getOverlapResources(boolean exclusive) {
 	
-		GraphElement minRQ=GraphicSpace.getNextResourceGraphElement(problem, sharedResources.keySet());
+		//GraphElement minRQ=GraphicSpace.getNextResourceGraphElement(problem, sharedResources.keySet());
 		
 		
-		/*double min = Double.MAX_VALUE;
+		double min = Double.MAX_VALUE;
 		GraphElement minRQ = null;
 		for (GraphElement rq : sharedResources.keySet()) {
 			if(!rq.isAssignedResource()) {
@@ -300,18 +306,18 @@ public class GraphElement {
 					minRQ = rq;
 				}
 			}
-		}*/
-		if (minRQ == null) {
-			for (GraphElement rq : sharedResources.keySet()) {
+		}
+		if(minRQ==null) {
+			for(GraphElement rq: sharedResources.keySet()) {
 				if(rq.isAssignedResource()) {
 					continue;
 				}
-				if (!handledRequiredNeighborQuaList.contains(rq)) {
+				if(!handledRequiredNeighborQuaList.contains(rq)) {
 					rq.updateRatio();
-					double ratio = rq.getUrgentRatio();
-					if (min > ratio) {
-						min = ratio;
-						minRQ = rq;
+					double ratio=rq.getUrgentRatio();
+					if(min>ratio) {
+						min=ratio;
+						minRQ=rq;
 					}
 				}
 			}
@@ -339,6 +345,68 @@ public class GraphElement {
 	}
 	
 
+	// new order for overlapping resource
+	private List<String> getNewOverlapResources(boolean exclusive) {
+		
+		//GraphElement minRQ=GraphicSpace.getNextResourceGraphElement(problem, sharedResources.keySet());
+		
+		
+		double min = Double.MAX_VALUE;
+		GraphElement minRQ = null;
+		for (GraphElement rq : sharedResources.keySet()) {
+			if(!rq.isAssignedResource()) {
+				continue;
+			}
+			if (!handledRequiredNeighborQuaList.contains(rq)) {
+				rq.updateRatio();
+				
+				double ratio=problem.getQualifications().get(rq.getQualification()).getResources().size();
+				if (min > ratio) {
+					min = ratio;
+					minRQ = rq;
+				}
+			}
+		}
+		if(minRQ==null) {
+			for(GraphElement rq: sharedResources.keySet()) {
+				if(rq.isAssignedResource()) {
+					continue;
+				}
+				if(!handledRequiredNeighborQuaList.contains(rq)) {
+					rq.updateRatio();
+					double ratio=problem.getQualifications().get(rq.getQualification()).getResources().size();
+					if(min>ratio) {
+						min=ratio;
+						minRQ=rq;
+					}
+				}
+			}
+		}
+		if (minRQ == null) {
+			return null;
+		}
+		handledRequiredNeighborQuaList.add(minRQ);
+	
+		List<String> sum = new ArrayList<String>(sharedResources.get(minRQ));
+		
+		if(exclusive) {
+			List<String> othersSum = new ArrayList<String>();
+			for (GraphElement rq : sharedResources.keySet()) {
+				//if (!handledRequiredNeighborQuaList.contains(rq)) {
+				if(rq!=minRQ) {
+					othersSum.addAll(sharedResources.get(rq));
+				}
+			}
+			sum.removeAll(othersSum);
+		}
+		
+	
+		return sum;
+	}
+	
+	
+	
+	
 	
 	private void setCurrentTotalAvailableResNum() {
 	
@@ -382,6 +450,9 @@ public class GraphElement {
 	public double getUrgentRatio() {
 	
 		return 1.0 * requiredResNum / currentTotalAvailableResNum;
+		
+		//return 1.0/problem.getQualifications().get(quaId).getResources().size();
+		
 	}
 	
 	public int getRequiredResNum() {
